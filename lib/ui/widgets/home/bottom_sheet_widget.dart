@@ -18,9 +18,9 @@ class BottomSheetWidget extends StatelessWidget {
       return Container(
         height: Get.height * 0.8,
         width: Get.width,
-        decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+            color: AppColors.bakeryBox,
+            borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(15.0),
                 topRight: Radius.circular(15.0))),
         child: Padding(
@@ -32,30 +32,56 @@ class BottomSheetWidget extends StatelessWidget {
                 SizedBox(height: Get.height * 0.05),
                 _buttonRow(),
                 SizedBox(height: Get.height * 0.03),
-                SizedBox(
-                    height: Get.height * 0.15,
-                    width: Get.width,
-                    child: GetBuilder<CategoryController>(builder: (category) {
-                      return DropdownButtonFormField(
-                        hint: Text('Kategori Seçin',
-                            style: AppKeysTextStyle.buttonTextStyle
-                                .copyWith(color: AppColors.blackHowl)),
-                        //isDense: true,
-                        //value: 'ali',
-                        iconEnabledColor: AppColors.blackHowl,
-                        iconDisabledColor: AppColors.blackHowl,
-                        style: AppKeysTextStyle.dropDownMenuItemTextStyle,
-                        borderRadius: BorderRadius.circular(15.0),
-                        items: generateDropDownMenuItemList(),
-                        onChanged: (value) {
-                          category.selectCategory(value);
-                        },
-                      );
-                    })),
+                _categorySelectBox(),
+                SizedBox(height: Get.height * 0.03),
+                TextFormField(
+                  cursorColor: AppColors.blackHowl,
+                  // style: AppKeysTextStyle.buttonTextStyle
+                  //     .copyWith(color: AppColors.blackHowl),
+                  maxLines: 4,
+                  maxLength: 30,
+                  decoration: InputDecoration(
+                      hintText: 'Açıklama',
+                      fillColor: Colors.white,
+                      filled: true,
+                      enabledBorder: _formBorder(),
+                      //border: _formBorder(),
+                      focusedBorder: _formBorder()),
+                ),
               ],
             )),
       );
     });
+  }
+
+  SizedBox _categorySelectBox() {
+    return SizedBox(
+        height: Get.height * 0.13,
+        width: Get.width,
+        child: DropdownButtonFormField(
+          hint: Text('Kategori Seçin',
+              style: AppKeysTextStyle.buttonTextStyle
+                  .copyWith(color: AppColors.blackHowl)),
+          decoration: InputDecoration(
+              fillColor: Colors.white,
+              filled: true,
+              enabledBorder: _formBorder(),
+              //border: _formBorder(),
+              focusedBorder: _formBorder()),
+          style: AppKeysTextStyle.dropDownMenuItemTextStyle,
+          borderRadius: BorderRadius.circular(15.0),
+          items: generateDropDownMenuItemList(),
+          onChanged: (value) {
+            categoryController.selectCategory(value);
+          },
+        ));
+  }
+
+  OutlineInputBorder _formBorder() {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Colors.white, width: 0.0),
+    );
   }
 
   Align _bottomSheetCancelButton() {
