@@ -41,6 +41,11 @@ class AppKeysTextStyle {
     fontWeight: FontWeight.w500,
     fontSize: Get.width * 0.045
   );
+  static TextStyle dropDownMenuItemTextStyle = TextStyle(
+    color: AppColors.blackHowl,
+    fontWeight: FontWeight.w600,
+    fontSize: Get.width * 0.06
+  );
   // static TextStyle selectedButtonTextStyle = TextStyle(
   //   color: AppColors.bakeryBox,
   //   fontWeight: FontWeight.bold,
