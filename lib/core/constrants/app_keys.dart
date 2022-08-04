@@ -8,5 +8,6 @@ class AppKeys {
   static String fixedExpense = 'Sabit Gider';
   static String extra = 'Ekstra';
   static String unexpected = 'Beklenmedik';
+  static String description = 'Açıklama';
 
 }
