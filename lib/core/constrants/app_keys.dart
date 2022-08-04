@@ -10,5 +10,6 @@ class AppKeys {
   static String unexpected = 'Beklenmedik';
   static String description = 'Açıklama';
   static String saveText = 'Kaydet';
+  static String categoryFormValidatorText = 'Lütfen bir kategori seçiniz';
 
 }
