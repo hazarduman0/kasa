@@ -16,7 +16,8 @@ class BottomSheetWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<BottomSheetController>(builder: (context) {
       return SingleChildScrollView(
-        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
         child: Container(
           height: Get.height * 0.8,
           width: Get.width,
@@ -36,25 +37,55 @@ class BottomSheetWidget extends StatelessWidget {
                   SizedBox(height: Get.height * 0.03),
                   _categorySelectBox(),
                   SizedBox(height: Get.height * 0.03),
-                  TextFormField(
-                    cursorColor: AppColors.blackHowl,
-                    // style: AppKeysTextStyle.buttonTextStyle
-                    //     .copyWith(color: AppColors.blackHowl),
-                    maxLines: 4,
-                    maxLength: 30,
-                    decoration: InputDecoration(
-                        hintText: AppKeys.description,
-                        fillColor: Colors.white,
-                        filled: true,
-                        enabledBorder: _formBorder(),
-                        //border: _formBorder(),
-                        focusedBorder: _formBorder()),
+                  _descriptionForm(),
+                  SizedBox(height: Get.height * 0.03),
+                  _amountFormField(),
+                  SizedBox(height: Get.height * 0.01),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: ElevatedButton(
+                        onPressed: () {}, child: Text(AppKeys.saveText)),
                   ),
                 ],
               )),
         ),
       );
     });
+  }
+
+  SizedBox _amountFormField() {
+    return SizedBox(
+      height: Get.height * 0.1,
+      width: Get.width,
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        cursorColor: AppColors.blackHowl,
+        maxLines: 1,
+        decoration: _formInputDecoration(
+            sheetController.isRemove ? AppKeys.expense : AppKeys.incomeText),
+      ),
+    );
+  }
+
+  TextFormField _descriptionForm() {
+    return TextFormField(
+      cursorColor: AppColors.blackHowl,
+      // style: AppKeysTextStyle.buttonTextStyle
+      //     .copyWith(color: AppColors.blackHowl),
+      maxLines: 4,
+      maxLength: 30,
+      decoration: _formInputDecoration(AppKeys.description),
+    );
+  }
+
+  InputDecoration _formInputDecoration(String hintText) {
+    return InputDecoration(
+        hintText: hintText,
+        fillColor: Colors.white,
+        filled: true,
+        enabledBorder: _formBorder(),
+        //border: _formBorder(),
+        focusedBorder: _formBorder());
   }
 
   SizedBox _categorySelectBox() {
