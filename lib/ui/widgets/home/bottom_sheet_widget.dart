@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kasa/controllers/amount_controller.dart';
 import 'package:kasa/controllers/bottom_sheet_controller.dart';
 import 'package:kasa/controllers/category_controller.dart';
 import 'package:kasa/core/constrants/app_colors.dart';
 import 'package:kasa/core/constrants/app_keys.dart';
 import 'package:kasa/core/constrants/app_keys_textstyle.dart';
+import 'package:kasa/data/models/amount.dart';
+import 'package:kasa/data/provider/amount_provider.dart';
 
-class BottomSheetWidget extends StatelessWidget {
+class BottomSheetWidget extends StatefulWidget {
   BottomSheetWidget({Key? key}) : super(key: key);
 
+  @override
+  State<BottomSheetWidget> createState() => _BottomSheetWidgetState();
+}
+
+class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   final BottomSheetController sheetController = Get.find();
+
   final CategoryController categoryController = Get.find();
+
+  final AmountController amountController = Get.find();
+
+  final key = GlobalKey<FormState>();
+
+  AmountOperations amountOperations = AmountOperations();
 
   @override
   Widget build(BuildContext context) {
@@ -28,29 +43,55 @@ class BottomSheetWidget extends StatelessWidget {
                   topRight: Radius.circular(15.0))),
           child: Padding(
               padding: EdgeInsets.symmetric(horizontal: Get.width * 0.03),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _bottomSheetCancelButton(),
-                  SizedBox(height: Get.height * 0.05),
-                  _buttonRow(),
-                  SizedBox(height: Get.height * 0.03),
-                  _categorySelectBox(),
-                  SizedBox(height: Get.height * 0.03),
-                  _descriptionForm(),
-                  SizedBox(height: Get.height * 0.03),
-                  _amountFormField(),
-                  SizedBox(height: Get.height * 0.01),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: ElevatedButton(
-                        onPressed: () {}, child: Text(AppKeys.saveText)),
-                  ),
-                ],
+              child: Form(
+                key: key,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _bottomSheetCancelButton(),
+                    SizedBox(height: Get.height * 0.05),
+                    _buttonRow(),
+                    SizedBox(height: Get.height * 0.03),
+                    _categorySelectBox(),
+                    SizedBox(height: Get.height * 0.03),
+                    _descriptionForm(),
+                    SizedBox(height: Get.height * 0.03),
+                    _amountFormField(),
+                    SizedBox(height: Get.height * 0.01),
+                    _saveButton(),
+                  ],
+                ),
               )),
         ),
       );
     });
+  }
+
+  Align _saveButton() {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(elevation: 0.0),
+          onPressed: () {
+            validateAndSave();
+          },
+          child: Text(AppKeys.saveText)),
+    );
+  }
+
+  validateAndSave() async {
+    final _isValid = key.currentState!.validate();
+    if (_isValid) {
+      key.currentState!.save();
+      await amountOperations.createAmount(Amount(
+          category: sheetController.selectedCategoryText,
+          description: sheetController.selectedCategoryText,
+          amount: sheetController.amountDouble,
+          isFixed: sheetController.isFixedChoosen,
+          dateTime: DateTime.now()));
+      amountController.getAmountList();
+      Get.back();
+    }
   }
 
   SizedBox _amountFormField() {
@@ -61,8 +102,22 @@ class BottomSheetWidget extends StatelessWidget {
         keyboardType: TextInputType.number,
         cursorColor: AppColors.blackHowl,
         maxLines: 1,
+        textInputAction: TextInputAction.done,
         decoration: _formInputDecoration(
             sheetController.isRemove ? AppKeys.expense : AppKeys.incomeText),
+        onSaved: (newValue) {
+          sheetController.setAmount(newValue);
+        },
+        validator: (value) {
+          if (value!.isEmpty) {
+            return 'Lütfen bir değer giriniz';
+          }
+          if (value.isNotEmpty) {
+            if (sheetController.isRemove && double.parse(value) < 0) {
+              return 'Lütfen 0 dan büyük bir değer giriniz';
+            }
+          }
+        },
       ),
     );
   }
@@ -72,6 +127,15 @@ class BottomSheetWidget extends StatelessWidget {
       cursorColor: AppColors.blackHowl,
       // style: AppKeysTextStyle.buttonTextStyle
       //     .copyWith(color: AppColors.blackHowl),
+      validator: (value) {
+        if (value!.length > 30) {
+          return 'Lütfen 30 karakterden fazla metin girmeyiniz';
+        }
+      },
+      onSaved: (newValue) {
+        sheetController.setDescriptionText(newValue);
+      },
+      textInputAction: TextInputAction.done,
       maxLines: 4,
       maxLength: 30,
       decoration: _formInputDecoration(AppKeys.description),
@@ -85,7 +149,8 @@ class BottomSheetWidget extends StatelessWidget {
         filled: true,
         enabledBorder: _formBorder(),
         //border: _formBorder(),
-        focusedBorder: _formBorder());
+        focusedBorder: _formBorder(),
+        errorBorder: InputBorder.none);
   }
 
   SizedBox _categorySelectBox() {
@@ -97,6 +162,7 @@ class BottomSheetWidget extends StatelessWidget {
               style: AppKeysTextStyle.buttonTextStyle
                   .copyWith(color: AppColors.blackHowl)),
           decoration: InputDecoration(
+              errorBorder: InputBorder.none,
               fillColor: Colors.white,
               filled: true,
               enabledBorder: _formBorder(),
@@ -105,6 +171,14 @@ class BottomSheetWidget extends StatelessWidget {
           style: AppKeysTextStyle.dropDownMenuItemTextStyle,
           borderRadius: BorderRadius.circular(15.0),
           items: generateDropDownMenuItemList(),
+          validator: (value) {
+            if (value == null) {
+              return AppKeys.categoryFormValidatorText;
+            }
+          },
+          onSaved: (newValue) {
+            sheetController.setCategoryText(newValue);
+          },
           onChanged: (value) {
             categoryController.selectCategory(value);
           },
