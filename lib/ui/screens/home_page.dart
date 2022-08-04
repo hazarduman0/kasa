@@ -15,91 +15,77 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-              flex: 2,
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 10.0),
-                      child: TextButton(
-                          onPressed: () {},
-                          child: Text(AppKeys.menuText,
-                              style: AppKeysTextStyle.menuTextStyle)),
-                    ),
-                    SizedBox(height: Get.height * 0.01),
-                    const Align(
-                        alignment: Alignment.center,
-                        child: MonthComparisonCard()), //ListViewBuilder
-                  ],
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Colors.transparent,
+            expandedHeight: Get.height * 0.3,
+            flexibleSpace: FlexibleSpaceBar(
+              background: SizedBox(
+                height: Get.height * 0.2,
+                child: const Align(
+                  alignment: Alignment.center,
+                  child: MonthComparisonCard(),
                 ),
-              )),
-          Expanded(
-              flex: 3,
-              child: SizedBox(
-                width: Get.width,
-                child: Card(
-                  margin: EdgeInsets.zero,
-                  //color: Colors.red,
-                  color: AppColors.bakeryBox,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15.0),
-                          topRight: Radius.circular(15.0))),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: Get.width * 0.05,
-                        vertical: Get.height * 0.04),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Son 30 gün'),
-                            Text('+4.342,02',
-                                style: AppKeysTextStyle.currentBalanceStyle)
-                          ],
-                        ),
-                        Expanded(
-                          child: ListView(
-                            //listviewBuilder
-                            physics: const BouncingScrollPhysics(
-                                parent: AlwaysScrollableScrollPhysics()),
-                            children: [
-                              ActivityTimeLine(
-                                  amount: -500,
-                                  date: '24/07/2022',
-                                  name: 'Faturalar'),
-                              ActivityTimeLine(
-                                  amount: -400,
-                                  date: '25/07/2022',
-                                  name: 'Online Alışveriş'),
-                              ActivityTimeLine(
-                                  amount: -800,
-                                  date: '27/07/2022',
-                                  name: 'Mutfak Alışverişi'),
-                              ActivityTimeLine(
-                                  amount: -2000,
-                                  date: '28/07/2022',
-                                  name: 'kira'),
-                              ActivityTimeLine(
-                                  amount: 11000,
-                                  date: '31/07/2022',
-                                  name: 'Maaş'),
-                              SizedBox(height: Get.height * 0.1)
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Card(
+              margin: EdgeInsets.zero,
+              //color: Colors.red,
+              color: AppColors.bakeryBox,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0))),
+              child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: Get.width * 0.05,
+                      vertical: Get.height * 0.04),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Son 30 gün'),
+                          Text('+4.342,02',
+                              style: AppKeysTextStyle.currentBalanceStyle)
+                        ],
+                      ),
+                      Column(
+                        //listviewBuilder
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ActivityTimeLine(
+                              amount: -500,
+                              date: '24/07/2022',
+                              name: 'Faturalar'),
+                          ActivityTimeLine(
+                              amount: -400,
+                              date: '25/07/2022',
+                              name: 'Online Alışveriş'),
+                          ActivityTimeLine(
+                              amount: -800,
+                              date: '27/07/2022',
+                              name: 'Mutfak Alışverişi'),
+                          ActivityTimeLine(
+                              amount: -2000, date: '28/07/2022', name: 'kira'),
+                          ActivityTimeLine(
+                              amount: 11000, date: '31/07/2022', name: 'Maaş'),
+                          SizedBox(height: Get.height * 0.1)
+                        ],
+                      )
+                    ],
                   ),
                 ),
-              )),
+              ),
+            ),
+          )
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(elevation: 0.0, items: [
@@ -143,6 +129,175 @@ class HomePage extends StatelessWidget {
 
   Future<dynamic> _getBottomSheet() {
     return Get.bottomSheet(
-        elevation: 0.0, isScrollControlled: true, BottomSheetWidget());
+        elevation: 0.0,
+        isScrollControlled: true,
+        enableDrag: false,
+        BottomSheetWidget());
   }
 }
+
+// SingleChildScrollView(
+//         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+//         child: Column(
+//           children: [
+//             Expanded(
+//                 flex: 2,
+//                 child: Container(
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Padding(
+//                         padding: const EdgeInsets.symmetric(
+//                             vertical: 15.0, horizontal: 10.0),
+//                         child: TextButton(
+//                             onPressed: () {},
+//                             child: Text(AppKeys.menuText,
+//                                 style: AppKeysTextStyle.menuTextStyle)),
+//                       ),
+//                       SizedBox(height: Get.height * 0.01),
+//                       const Align(
+//                           alignment: Alignment.center,
+//                           child: MonthComparisonCard()), //ListViewBuilder
+//                     ],
+//                   ),
+//                 )),
+//             Expanded(
+//                 flex: 3,
+//                 child: SizedBox(
+//                   width: Get.width,
+//                   child: Card(
+//                     margin: EdgeInsets.zero,
+//                     //color: Colors.red,
+//                     color: AppColors.bakeryBox,
+//                     shape: const RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.only(
+//                             topLeft: Radius.circular(15.0),
+//                             topRight: Radius.circular(15.0))),
+//                     child: Padding(
+//                       padding: EdgeInsets.symmetric(
+//                           horizontal: Get.width * 0.05,
+//                           vertical: Get.height * 0.04),
+//                       child: Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           Row(
+//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                             children: [
+//                               const Text('Son 30 gün'),
+//                               Text('+4.342,02',
+//                                   style: AppKeysTextStyle.currentBalanceStyle)
+//                             ],
+//                           ),
+//                           Expanded(
+//                             child: ListView(
+//                               //listviewBuilder
+//                               shrinkWrap: true,
+//                               physics: const NeverScrollableScrollPhysics(),
+//                               children: [
+//                                 ActivityTimeLine(
+//                                     amount: -500,
+//                                     date: '24/07/2022',
+//                                     name: 'Faturalar'),
+//                                 ActivityTimeLine(
+//                                     amount: -400,
+//                                     date: '25/07/2022',
+//                                     name: 'Online Alışveriş'),
+//                                 ActivityTimeLine(
+//                                     amount: -800,
+//                                     date: '27/07/2022',
+//                                     name: 'Mutfak Alışverişi'),
+//                                 ActivityTimeLine(
+//                                     amount: -2000,
+//                                     date: '28/07/2022',
+//                                     name: 'kira'),
+//                                 ActivityTimeLine(
+//                                     amount: 11000,
+//                                     date: '31/07/2022',
+//                                     name: 'Maaş'),
+//                                 SizedBox(height: Get.height * 0.1)
+//                               ],
+//                             ),
+//                           )
+//                         ],
+//                       ),
+//                     ),
+//                   ),
+//                 )),
+//           ],
+//         ),
+//       ),
+
+
+
+
+
+
+
+// NestedScrollView(
+//         headerSliverBuilder: (context, innerBoxIsScrolled) {
+//           return [
+//             SliverAppBar(
+//               //title: Text('Başlık'),
+//               backgroundColor: Colors.transparent,
+//               bottom: PreferredSize(
+//                   preferredSize: Size.fromHeight(Get.height * 0.2),
+//                   child: SizedBox(
+//                       height: Get.height * 0.2,
+//                       width: Get.width,
+//                       child: const Align(
+//                           alignment: Alignment.center,
+//                           child: MonthComparisonCard()))),
+//             )
+//           ];
+//         },
+//         body: Card(
+//           margin: EdgeInsets.zero,
+//           //color: Colors.red,
+//           color: AppColors.bakeryBox,
+//           shape: const RoundedRectangleBorder(
+//               borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(15.0),
+//                   topRight: Radius.circular(15.0))),
+//           child: SingleChildScrollView(
+//             physics: const NeverScrollableScrollPhysics(),
+//             child: Padding(
+//               padding: EdgeInsets.symmetric(
+//                   horizontal: Get.width * 0.05, vertical: Get.height * 0.04),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       const Text('Son 30 gün'),
+//                       Text('+4.342,02',
+//                           style: AppKeysTextStyle.currentBalanceStyle)
+//                     ],
+//                   ),
+//                   Column(
+//                     //listviewBuilder
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: [
+//                       ActivityTimeLine(
+//                           amount: -500, date: '24/07/2022', name: 'Faturalar'),
+//                       ActivityTimeLine(
+//                           amount: -400,
+//                           date: '25/07/2022',
+//                           name: 'Online Alışveriş'),
+//                       ActivityTimeLine(
+//                           amount: -800,
+//                           date: '27/07/2022',
+//                           name: 'Mutfak Alışverişi'),
+//                       ActivityTimeLine(
+//                           amount: -2000, date: '28/07/2022', name: 'kira'),
+//                       ActivityTimeLine(
+//                           amount: 11000, date: '31/07/2022', name: 'Maaş'),
+//                       SizedBox(height: Get.height * 0.1)
+//                     ],
+//                   )
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
