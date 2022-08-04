@@ -9,5 +9,6 @@ class AppKeys {
   static String extra = 'Ekstra';
   static String unexpected = 'Beklenmedik';
   static String description = 'Açıklama';
+  static String saveText = 'Kaydet';
 
 }
