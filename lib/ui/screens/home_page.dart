@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kasa/controllers/amount_controller.dart';
-import 'package:kasa/controllers/bottom_sheet_controller.dart';
+import 'package:kasa/controllers/input_controller.dart';
 import 'package:kasa/core/constrants/app_colors.dart';
+import 'package:kasa/core/constrants/app_keys.dart';
 import 'package:kasa/core/constrants/app_keys_textstyle.dart';
 import 'package:kasa/ui/widgets/home/activity_timeline.dart';
 import 'package:kasa/ui/widgets/home/bottom_sheet_widget.dart';
@@ -51,25 +52,29 @@ class HomePage extends StatelessWidget {
                     padding: EdgeInsets.symmetric(
                         horizontal: Get.width * 0.05,
                         vertical: Get.height * 0.04),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Son 30 gün'),
-                            Text('+4.342,02',
-                                style: AppKeysTextStyle.currentBalanceStyle)
-                          ],
-                        ),
-                        Column(
-                          //listviewBuilder
-                          mainAxisSize: MainAxisSize.min,
-                          children: getAmountWidgetList() +
-                              [SizedBox(height: Get.height * 0.1)],
-                        )
-                      ],
-                    ),
+                    child: GetBuilder<AmountController>(builder: (amount) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Son 30 gün'),
+                              Text('+4.342,02',
+                                  style: AppKeysTextStyle.currentBalanceStyle)
+                            ],
+                          ),
+                          amount.isLoading
+                              ? const Center(child: CircularProgressIndicator())
+                              : Column(
+                                  //listviewBuilder
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: getAmountWidgetList() +
+                                      [SizedBox(height: Get.height * 0.1)],
+                                )
+                        ],
+                      );
+                    }),
                   ),
                 ),
               ),
@@ -84,31 +89,31 @@ class HomePage extends StatelessWidget {
             backgroundColor: AppColors.maximumBlueGreen),
         BottomNavigationBarItem(
             icon: const Icon(Icons.incomplete_circle_outlined),
-            label: 'Profit',
+            label: '${AppKeys.incomeText}/${AppKeys.expense}',
             backgroundColor: AppColors.maximumBlueGreen),
         BottomNavigationBarItem(
-          icon: GetBuilder<BottomSheetController>(builder: (sheet) {
+          icon: GetBuilder<InputController>(builder: (sheet) {
             return IconButton(
               onPressed: () {
                 sheet.isRemoveFunc(false);
                 _getBottomSheet();
               },
               icon: Icon(Icons.add_circle_outlined,
-                  color: AppColors.maximumBlueGreen, size: 35.0),
+                  color: AppColors.limonana, size: 35.0),
             );
           }),
           label: '',
-          backgroundColor: AppColors.maximumBlueGreen,
+          //backgroundColor: AppColors.maximumBlueGreen,
         ),
       ]),
-      floatingActionButton: GetBuilder<BottomSheetController>(builder: (sheet) {
+      floatingActionButton: GetBuilder<InputController>(builder: (sheet) {
         return FloatingActionButton(
           elevation: 0.0,
           onPressed: () {
             sheet.isRemoveFunc(true);
             _getBottomSheet();
           },
-          child: Icon(Icons.remove_outlined),
+          child: Icon(Icons.remove_outlined, size: 25.0),
           backgroundColor: AppColors.silkenRuby,
         );
       }),
@@ -128,9 +133,10 @@ class HomePage extends StatelessWidget {
     return List.generate(
         _amount.amountList.length,
         (index) => ActivityTimeLine(
-            amount: _amount.amountList[index].amount,
-            date: DateFormat.yMd().format(_amount.amountList[index].dateTime),
-            name: _amount.amountList[index].category));
+              amount: _amount.amountList[index],
+              isFirst: index == 0,
+              isLast: index == _amount.amountList.length - 1,
+            ));
   }
 }
 
