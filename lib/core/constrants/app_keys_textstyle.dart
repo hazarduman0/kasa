@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,10 +43,20 @@ class AppKeysTextStyle {
     fontWeight: FontWeight.w500,
     fontSize: Get.width * 0.045
   );
-  static TextStyle dropDownMenuItemTextStyle = TextStyle(
+  static TextStyle categoryTextStyle = TextStyle(
     color: AppColors.blackHowl,
     fontWeight: FontWeight.w600,
     fontSize: Get.width * 0.06
+  );
+  static TextStyle amountDetailHeaderTextStyle = TextStyle(
+    color: AppColors.blackHowl,
+    fontWeight: FontWeight.w500,
+    fontSize: Get.width * 0.05
+  );
+  static TextStyle amountDetailDescriptionTextStyle = TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.w400,
+    fontSize: Get.width * 0.04
   );
   // static TextStyle selectedButtonTextStyle = TextStyle(
   //   color: AppColors.bakeryBox,
