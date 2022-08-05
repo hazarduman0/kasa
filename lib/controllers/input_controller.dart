@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 class InputController extends GetxController {
   //final RxBool _isFixedChoosen = false.obs;
   final RxBool _isRemove = false.obs;
+  final RxBool _editStackBool = false.obs;
   final RxString _selectedCategoryText = ''.obs;
   final RxString _descriptionText = ''.obs;
   final RxDouble _amountDouble = 0.0.obs;
 
   //bool get isFixedChoosen => _isFixedChoosen.value;
+  bool get editBool => _editStackBool.value;
   bool get isRemove => _isRemove.value;
   String get selectedCategoryText => _selectedCategoryText.value;
   String get descriptionText => _descriptionText.value;
@@ -18,6 +20,11 @@ class InputController extends GetxController {
       _selectedCategoryText.value = selectedText as String;
       update();
     }
+  }
+
+  setEditStackBool(bool editStack){
+    _editStackBool.value = editStack;
+    update();
   }
 
   setDescriptionText(String? descriptionFormText) {
