@@ -11,5 +11,8 @@ class AppKeys {
   static String description = 'Açıklama';
   static String saveText = 'Kaydet';
   static String categoryFormValidatorText = 'Lütfen bir kategori seçiniz';
+  static String categoryHeader = 'Kategori';
+  static String updateText = 'Güncelle';
+  static String dateText = 'Tarih';
 
 }
