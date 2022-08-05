@@ -32,14 +32,14 @@ class DatabaseRepository {
     const nullableTextType = 'TEXT';
     const boolType = 'BOOLEAN NOT NULL';
     // const integerType = 'INTEGER NOT NULL';
-    // const realType = 'REAL NOT NULL';
+    const realType = 'REAL NOT NULL';
 
     await db.execute('''
     CREATE TABLE $tableAmount (
       ${AmountFields.id} $idType,
       ${AmountFields.category} $notNullableTextType,
       ${AmountFields.description} $nullableTextType,
-      ${AmountFields.amount} $notNullableTextType,
+      ${AmountFields.amount} $realType,
       ${AmountFields.isFixed} $boolType,
       ${AmountFields.dateTime} $notNullableTextType
     )
