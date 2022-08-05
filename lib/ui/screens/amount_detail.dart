@@ -19,44 +19,99 @@ class AmountDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Get.back();
-            },
-            icon: const Icon(Icons.arrow_back_ios_new_outlined,
-                color: Colors.black)),
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.delete, color: AppColors.silkenRuby))
-        ],
-        backgroundColor: Colors.transparent,
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Get.width * 0.05),
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics()),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _categoryEdit(),
-              //_categorySelectBox(),
-              SizedBox(height: Get.height * 0.05),
-              _descriptionForm(),
-              SizedBox(height: Get.height * 0.05),
-              _dateContainer(),
-              SizedBox(height: Get.height * 0.05),
-              _amountForm(),
-              SizedBox(height: Get.height * 0.05),
-              _elevatedButtonBuild(),
-              SizedBox(height: Get.height * 0.05),
-            ],
+    return GetBuilder<InputController>(builder: (input) {
+      return Stack(
+        children: [
+          Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  icon: const Icon(Icons.arrow_back_ios_new_outlined,
+                      color: Colors.black)),
+              actions: [
+                IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.delete, color: AppColors.silkenRuby))
+              ],
+              backgroundColor: Colors.transparent,
+            ),
+            body: Padding(
+              padding: EdgeInsets.symmetric(horizontal: Get.width * 0.05),
+              child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics()),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _categoryEdit(),
+                      //_categorySelectBox(),
+                      SizedBox(height: Get.height * 0.05),
+                      _descriptionForm(),
+                      SizedBox(height: Get.height * 0.05),
+                      _dateContainer(),
+                      SizedBox(height: Get.height * 0.05),
+                      _amountForm(),
+                      SizedBox(height: Get.height * 0.05),
+                      _elevatedButtonBuild(),
+                      SizedBox(height: Get.height * 0.05),
+                    ],
+                  )),
+            ),
           ),
-        ),
-      ),
+          input.editBool
+              ? GestureDetector(
+                  onTap: () {
+                    input.setEditStackBool(false);
+                  },
+                  child: Container(
+                    color: Colors.transparent,
+                    height: Get.height,
+                    width: Get.width,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: Get.height * 0.1),
+                      child: Align(
+                          alignment: Alignment.center,
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: SizedBox(
+                              width: Get.width * 0.9,
+                              child: Card(
+                                elevation: 8.0,
+                                child: SingleChildScrollView(
+                                  physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: _categoryList(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )),
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink()
+        ],
+      );
+    });
+  }
+
+  List<Widget> _categoryList() {
+    bool listBool = !inputController.isRemove;
+    return List.generate(
+        listBool
+            ? categoryController.incomeList.length
+            : categoryController.expenseList.length,
+        (index) => _categoryTile(listBool
+            ? categoryController.incomeList[index]
+            : categoryController.expenseList[index]));
+  }
+
+  ListTile _categoryTile(String category) {
+    return ListTile(
+      leading: Text(category, style: AppKeysTextStyle.categoryTextStyle),
     );
   }
 
@@ -216,7 +271,9 @@ class AmountDetailPage extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            inputController.setEditStackBool(true);
+          },
           child: Container(
             height: Get.height * 0.1,
             width: Get.width,
@@ -226,8 +283,10 @@ class AmountDetailPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Spacer(flex: 9),
-                Text(amount.category,
-                    style: AppKeysTextStyle.categoryTextStyle),
+                GetBuilder<InputController>(builder: (input) {
+                  return Text(input.selectedCategoryText,
+                      style: AppKeysTextStyle.categoryTextStyle);
+                }),
                 const Spacer(flex: 9),
                 Icon(Icons.edit, color: AppColors.sparkyBlue),
                 const Spacer(flex: 1)
