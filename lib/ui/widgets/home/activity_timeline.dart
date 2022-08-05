@@ -32,6 +32,7 @@ class ActivityTimeLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        inputController.setCategoryText(amount.category);
         amount.amount > 0
             ? inputController.isRemoveFunc(false)
             : inputController.isRemoveFunc(true);
