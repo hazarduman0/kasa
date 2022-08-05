@@ -19,7 +19,7 @@ class AmountOperations {
   Future<List<Amount>> getAmountList () async {
     final db = await dbRepository.database;
 
-    const orderBy = '${AmountFields.category} ASC';
+    const orderBy = '${AmountFields.dateTime} DESC';
 
     final result = await db.query(
       tableAmount,
