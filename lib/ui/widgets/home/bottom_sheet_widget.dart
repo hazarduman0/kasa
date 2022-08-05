@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasa/controllers/amount_controller.dart';
-import 'package:kasa/controllers/bottom_sheet_controller.dart';
+import 'package:kasa/controllers/input_controller.dart';
 import 'package:kasa/controllers/category_controller.dart';
 import 'package:kasa/core/constrants/app_colors.dart';
 import 'package:kasa/core/constrants/app_keys.dart';
@@ -17,7 +17,7 @@ class BottomSheetWidget extends StatefulWidget {
 }
 
 class _BottomSheetWidgetState extends State<BottomSheetWidget> {
-  final BottomSheetController sheetController = Get.find();
+  final InputController inputController = Get.find();
 
   final CategoryController categoryController = Get.find();
 
@@ -29,7 +29,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<BottomSheetController>(builder: (context) {
+    return GetBuilder<InputController>(builder: (context) {
       return SingleChildScrollView(
         physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics()),
@@ -50,8 +50,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                   children: [
                     _bottomSheetCancelButton(),
                     SizedBox(height: Get.height * 0.05),
-                    _buttonRow(),
-                    SizedBox(height: Get.height * 0.03),
                     _categorySelectBox(),
                     SizedBox(height: Get.height * 0.03),
                     _descriptionForm(),
@@ -84,10 +82,10 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     if (_isValid) {
       key.currentState!.save();
       await amountOperations.createAmount(Amount(
-          category: sheetController.selectedCategoryText,
-          description: sheetController.selectedCategoryText,
-          amount: sheetController.amountDouble,
-          isFixed: sheetController.isFixedChoosen,
+          category: inputController.selectedCategoryText,
+          description: inputController.descriptionText,
+          amount: inputController.isRemove ? (-inputController.amountDouble) : inputController.amountDouble,
+          isFixed: false,
           dateTime: DateTime.now()));
       amountController.getAmountList();
       Get.back();
@@ -104,16 +102,16 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
         maxLines: 1,
         textInputAction: TextInputAction.done,
         decoration: _formInputDecoration(
-            sheetController.isRemove ? AppKeys.expense : AppKeys.incomeText),
+            inputController.isRemove ? AppKeys.expense : AppKeys.incomeText),
         onSaved: (newValue) {
-          sheetController.setAmount(newValue);
+          inputController.setAmount(newValue);
         },
         validator: (value) {
           if (value!.isEmpty) {
             return 'Lütfen bir değer giriniz';
           }
           if (value.isNotEmpty) {
-            if (sheetController.isRemove && double.parse(value) < 0) {
+            if (inputController.isRemove && double.parse(value) < 0) {
               return 'Lütfen 0 dan büyük bir değer giriniz';
             }
           }
@@ -133,7 +131,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
         }
       },
       onSaved: (newValue) {
-        sheetController.setDescriptionText(newValue);
+        inputController.setDescriptionText(newValue);
       },
       textInputAction: TextInputAction.done,
       maxLines: 4,
@@ -168,7 +166,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
               enabledBorder: _formBorder(),
               //border: _formBorder(),
               focusedBorder: _formBorder()),
-          style: AppKeysTextStyle.dropDownMenuItemTextStyle,
+          style: AppKeysTextStyle.categoryTextStyle,
           borderRadius: BorderRadius.circular(15.0),
           items: generateDropDownMenuItemList(),
           validator: (value) {
@@ -177,10 +175,11 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
             }
           },
           onSaved: (newValue) {
-            sheetController.setCategoryText(newValue);
+            inputController.setCategoryText(newValue);
           },
           onChanged: (value) {
-            categoryController.selectCategory(value);
+            //categoryController.selectCategory(value);
+            inputController.selectCategory(value);
           },
         ));
   }
@@ -208,7 +207,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 
   List<DropdownMenuItem<String>> generateDropDownMenuItemList() {
     List<DropdownMenuItem<String>> dropDownMenuItems = [];
-    if (sheetController.isRemove) {
+    if (inputController.isRemove) {
       for (var item in categoryController.expenseList) {
         dropDownMenuItems.add(DropdownMenuItem(value: item, child: Text(item)));
       }
@@ -220,51 +219,51 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     return dropDownMenuItems;
   }
 
-  Padding _buttonRow() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Get.width * 0.01),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _fixedButton(sheetController.isRemove
-              ? AppKeys.fixedExpense
-              : AppKeys.fixedIncome),
-          _extraButton(
-              sheetController.isRemove ? AppKeys.unexpected : AppKeys.extra)
-        ],
-      ),
-    );
-  }
+  // Padding _buttonRow() {
+  //   return Padding(
+  //     padding: EdgeInsets.symmetric(horizontal: Get.width * 0.01),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         _fixedButton(sheetController.isRemove
+  //             ? AppKeys.fixedExpense
+  //             : AppKeys.fixedIncome),
+  //         _extraButton(
+  //             sheetController.isRemove ? AppKeys.unexpected : AppKeys.extra)
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  SizedBox _extraButton(String name) {
-    return SizedBox(
-      width: Get.width * 0.43,
-      child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              elevation: 0.0,
-              primary: !sheetController.isFixedChoosen
-                  ? AppColors.enchantingSapphire
-                  : AppColors.nieblaAzul),
-          onPressed: () {
-            sheetController.extraButtonFunc();
-          },
-          child: Text(name, style: AppKeysTextStyle.buttonTextStyle)),
-    );
-  }
+  // SizedBox _extraButton(String name) {
+  //   return SizedBox(
+  //     width: Get.width * 0.43,
+  //     child: ElevatedButton(
+  //         style: ElevatedButton.styleFrom(
+  //             elevation: 0.0,
+  //             primary: !sheetController.isFixedChoosen
+  //                 ? AppColors.enchantingSapphire
+  //                 : AppColors.nieblaAzul),
+  //         onPressed: () {
+  //           sheetController.extraButtonFunc();
+  //         },
+  //         child: Text(name, style: AppKeysTextStyle.buttonTextStyle)),
+  //   );
+  // }
 
-  SizedBox _fixedButton(String name) {
-    return SizedBox(
-      width: Get.width * 0.43,
-      child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              elevation: 0.0,
-              primary: sheetController.isFixedChoosen
-                  ? AppColors.enchantingSapphire
-                  : AppColors.nieblaAzul),
-          onPressed: () {
-            sheetController.fixedButtonFunc();
-          },
-          child: Text(name, style: AppKeysTextStyle.buttonTextStyle)),
-    );
-  }
+  // SizedBox _fixedButton(String name) {
+  //   return SizedBox(
+  //     width: Get.width * 0.43,
+  //     child: ElevatedButton(
+  //         style: ElevatedButton.styleFrom(
+  //             elevation: 0.0,
+  //             primary: sheetController.isFixedChoosen
+  //                 ? AppColors.enchantingSapphire
+  //                 : AppColors.nieblaAzul),
+  //         onPressed: () {
+  //           sheetController.fixedButtonFunc();
+  //         },
+  //         child: Text(name, style: AppKeysTextStyle.buttonTextStyle)),
+  //   );
+  // }
 }
