@@ -22,16 +22,14 @@ class InputController extends GetxController {
     }
   }
 
-  setEditStackBool(bool editStack){
+  setEditStackBool(bool editStack) {
     _editStackBool.value = editStack;
     update();
   }
 
   setDescriptionText(String? descriptionFormText) {
-    if (descriptionFormText!.isNotEmpty) {
-      _descriptionText.value = descriptionFormText;
-      update();
-    }
+    _descriptionText.value = descriptionFormText!;
+    update();
   }
 
   setAmount(String? formAmount) {
