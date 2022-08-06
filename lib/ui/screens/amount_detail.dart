@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:kasa/controllers/amount_controller.dart';
 import 'package:kasa/controllers/category_controller.dart';
 import 'package:kasa/controllers/input_controller.dart';
 import 'package:kasa/core/constrants/app_colors.dart';
 import 'package:kasa/core/constrants/app_keys.dart';
 import 'package:kasa/core/constrants/app_keys_textstyle.dart';
 import 'package:kasa/data/models/amount.dart';
+import 'package:kasa/data/provider/amount_provider.dart';
+import 'package:kasa/ui/screens/home_page.dart';
 
 class AmountDetailPage extends StatelessWidget {
   AmountDetailPage({Key? key, required this.amount}) : super(key: key);
@@ -17,8 +20,17 @@ class AmountDetailPage extends StatelessWidget {
 
   final CategoryController categoryController = Get.find();
 
+  final AmountController amountController = Get.find();
+
+  AmountOperations amountOperations = AmountOperations();
+
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
+    print('amountDate: ${amount.dateTime}');
+    print(DateTime.now());
+    print('1 hours ago: ${( DateTime.now()).subtract( const Duration(days: 7))}');
     return GetBuilder<InputController>(builder: (input) {
       return Stack(
         children: [
@@ -32,7 +44,23 @@ class AmountDetailPage extends StatelessWidget {
                       color: Colors.black)),
               actions: [
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.defaultDialog(
+                        titlePadding: const EdgeInsets.all(10.0),
+                        contentPadding: const EdgeInsets.all(10.0),
+                        textCancel: 'İptal',
+                        middleText: 'İşlem silinecek onaylıyor musun?',
+                        textConfirm: 'Sil',
+                        confirmTextColor: Colors.red,
+                        buttonColor: Colors.white,
+                        title: 'Silinecek',
+                        onConfirm: () {
+                          amountOperations.deleteAmount(amount.id);
+                          amountController.getAmountList(); //controllere yaptır
+                          Get.to(() => HomePage());
+                        },
+                      );
+                    },
                     icon: Icon(Icons.delete, color: AppColors.silkenRuby))
               ],
               backgroundColor: Colors.transparent,
@@ -42,21 +70,24 @@ class AmountDetailPage extends StatelessWidget {
               child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(
                       parent: AlwaysScrollableScrollPhysics()),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _categoryEdit(),
-                      //_categorySelectBox(),
-                      SizedBox(height: Get.height * 0.05),
-                      _descriptionForm(),
-                      SizedBox(height: Get.height * 0.05),
-                      _dateContainer(),
-                      SizedBox(height: Get.height * 0.05),
-                      _amountForm(),
-                      SizedBox(height: Get.height * 0.05),
-                      _elevatedButtonBuild(),
-                      SizedBox(height: Get.height * 0.05),
-                    ],
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _categoryEdit(),
+                        //_categorySelectBox(),
+                        SizedBox(height: Get.height * 0.05),
+                        _descriptionForm(),
+                        SizedBox(height: Get.height * 0.05),
+                        _dateContainer(),
+                        SizedBox(height: Get.height * 0.05),
+                        _amountForm(),
+                        SizedBox(height: Get.height * 0.05),
+                        _elevatedButtonBuild(),
+                        SizedBox(height: Get.height * 0.05),
+                      ],
+                    ),
                   )),
             ),
           ),
@@ -72,19 +103,17 @@ class AmountDetailPage extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: Get.height * 0.1),
                       child: Align(
-                          alignment: Alignment.center,
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: SizedBox(
-                              width: Get.width * 0.9,
-                              child: Card(
-                                elevation: 8.0,
-                                child: SingleChildScrollView(
-                                  physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: _categoryList(),
-                                  ),
+                          alignment: Alignment.topCenter,
+                          child: SizedBox(
+                            width: Get.width * 0.9,
+                            child: Card(
+                              elevation: 8.0,
+                              child: SingleChildScrollView(
+                                physics: const BouncingScrollPhysics(
+                                    parent: AlwaysScrollableScrollPhysics()),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: _categoryList(),
                                 ),
                               ),
                             ),
@@ -109,45 +138,17 @@ class AmountDetailPage extends StatelessWidget {
             : categoryController.expenseList[index]));
   }
 
-  ListTile _categoryTile(String category) {
-    return ListTile(
-      leading: Text(category, style: AppKeysTextStyle.categoryTextStyle),
+  GestureDetector _categoryTile(String category) {
+    return GestureDetector(
+      onTap: () {
+        inputController.setCategoryText(category);
+        inputController.setEditStackBool(false);
+      },
+      child: ListTile(
+        leading: Text(category, style: AppKeysTextStyle.categoryTextStyle),
+      ),
     );
   }
-
-  // SizedBox _categorySelectBox() {
-  //   return SizedBox(
-  //       height: Get.height * 0.13,
-  //       width: Get.width,
-  //       child: DropdownButtonFormField(
-  //         //value: 'ali',
-  //         hint: Text('Kategori Seçin',
-  //             style: AppKeysTextStyle.buttonTextStyle
-  //                 .copyWith(color: AppColors.blackHowl)),
-  //         decoration: InputDecoration(
-  //             errorBorder: InputBorder.none,
-  //             fillColor: Colors.white,
-  //             filled: true,
-  //             enabledBorder: _formBorder(),
-  //             //border: _formBorder(),
-  //             focusedBorder: _formBorder()),
-  //         style: AppKeysTextStyle.categoryTextStyle,
-  //         borderRadius: BorderRadius.circular(15.0),
-  //         items: generateDropDownMenuItemList(),
-  //         validator: (value) {
-  //           if (value == null) {
-  //             return AppKeys.categoryFormValidatorText;
-  //           }
-  //         },
-  //         onSaved: (newValue) {
-  //           inputController.setCategoryText(newValue);
-  //         },
-  //         onChanged: (value) {
-  //           //categoryController.selectCategory(value);
-  //           inputController.selectCategory(value);
-  //         },
-  //       ));
-  // }
 
   List<DropdownMenuItem<String>> generateDropDownMenuItemList() {
     List<DropdownMenuItem<String>> dropDownMenuItems = [];
@@ -205,7 +206,9 @@ class AmountDetailPage extends StatelessWidget {
             height: Get.height * 0.07,
             width: Get.width / 2,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                validateAndUpdate();
+              },
               child: Text(AppKeys.updateText,
                   style: AppKeysTextStyle.amountDetailHeaderTextStyle
                       .copyWith(color: Colors.white)),
@@ -216,6 +219,22 @@ class AmountDetailPage extends StatelessWidget {
                 primary: AppColors.enchantingSapphire,
               ),
             )));
+  }
+
+  validateAndUpdate() {
+    final isValid = formKey.currentState!.validate();
+    if (isValid) {
+      formKey.currentState!.save();
+      amountOperations.updateAmount(Amount(
+          id: amount.id,
+          category: inputController.selectedCategoryText,
+          description: inputController.descriptionText,
+          amount: inputController.amountDouble,
+          isFixed: amount.isFixed,
+          dateTime: amount.dateTime));
+      amountController.getAmountList();
+      Get.back();
+    }
   }
 
   Column _amountForm() {
@@ -232,6 +251,19 @@ class AmountDetailPage extends StatelessWidget {
         TextFormField(
           initialValue: amount.amount.toString(),
           cursorColor: AppColors.blackHowl,
+          onSaved: (newValue) {
+            inputController.setAmount(newValue);
+          },
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Lütfen bir değer giriniz';
+            }
+            if (value.isNotEmpty) {
+              if (inputController.isRemove && double.parse(value) < 0) {
+                return 'Lütfen 0 dan büyük bir değer giriniz';
+              }
+            }
+          },
           decoration: _formInputDecoration(''),
         ),
       ],
@@ -253,6 +285,9 @@ class AmountDetailPage extends StatelessWidget {
           initialValue: amount.description,
           maxLength: 30,
           cursorColor: AppColors.blackHowl,
+          onSaved: (newValue) {
+            inputController.setDescriptionText(newValue);
+          },
           decoration: _formInputDecoration(''),
         ),
       ],
