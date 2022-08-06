@@ -81,7 +81,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     final _isValid = key.currentState!.validate();
     if (_isValid) {
       key.currentState!.save();
-      await amountOperations.createAmount(Amount(
+      await amountOperations.createAmount(Amount( //controllere yaptır
           category: inputController.selectedCategoryText,
           description: inputController.descriptionText,
           amount: inputController.isRemove ? (-inputController.amountDouble) : inputController.amountDouble,
