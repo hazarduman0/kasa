@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -56,14 +58,19 @@ class HomePage extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Son 30 gün'),
-                              Text('+4.342,02',
-                                  style: AppKeysTextStyle.currentBalanceStyle)
-                            ],
+                          // _rangeSelectStack(),
+                          AnimatedCrossFade(
+                            firstChild: _rangeAndProfit(),
+                            secondChild: _rangeOptions(),
+                            crossFadeState: !amount.rangeCrossFadeBool
+                                ? CrossFadeState.showFirst
+                                : CrossFadeState.showSecond,
+                            duration: const Duration(milliseconds: 200),
+                            reverseDuration: const Duration(milliseconds: 200),
+                            firstCurve: Curves.easeOut,
+                            secondCurve: Curves.easeIn,
                           ),
+
                           amount.isLoading
                               ? const Center(child: CircularProgressIndicator())
                               : Column(
@@ -119,6 +126,75 @@ class HomePage extends StatelessWidget {
       }),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
     );
+  }
+
+  // Stack _rangeSelectStack() {
+  //   return Stack(
+  //     children: [
+  //       _rangeAndProfit(),
+  //       _rangeOptions(),
+  //     ],
+  //   );
+  // }
+
+  Container _rangeOptions() {
+    return Container(
+      height: Get.height * 0.06,
+      width: Get.width,
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(15.0)),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
+        children: [
+          _rangeOption('Son 12 saat'),
+          _rangeOption('Son 24 saat'),
+          _rangeOption('Son hafta'),
+          _rangeOption('Son 15 gün'),
+          _rangeOption('Son 30 gün'),
+          _rangeOption('Son 60 gün'),
+          _rangeOption('Son 90 gün'),
+          _rangeOption('Özel')
+        ],
+      ),
+    );
+  }
+
+  TextButton _rangeOption(/*Function? func,*/ String string) => TextButton(
+      onPressed: () {
+        _amount.setSelectedRange(string);
+        _amount.getAmountList();
+        _amount.setRangeCrossFadeBool(false);
+      },
+      child: Text(string,
+          style: TextStyle(
+              color: _amount.selectedRange == string
+                  ? AppColors.goldenLuck
+                  : AppColors.maximumBlueGreen)));
+
+  GetBuilder _rangeAndProfit() {
+    return GetBuilder<AmountController>(builder: (amount) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TextButton(
+              onPressed: () {
+                _amount.setRangeCrossFadeBool(true);
+              },
+              child: Text(amount.selectedRange,
+                  style: const TextStyle(fontWeight: FontWeight.bold))),
+          Text(
+              amount.netAmount >= 0
+                  ? '+${amount.netAmount.toString()}'
+                  : amount.netAmount.toString(),
+              style: amount.netAmount >= 0
+                  ? AppKeysTextStyle.currentBalanceStyle
+                  : AppKeysTextStyle.currentBalanceStyle
+                      .copyWith(color: AppColors.silkenRuby))
+        ],
+      );
+    });
   }
 
   Future<dynamic> _getBottomSheet() {
