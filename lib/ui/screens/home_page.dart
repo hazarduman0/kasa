@@ -128,15 +128,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // Stack _rangeSelectStack() {
-  //   return Stack(
-  //     children: [
-  //       _rangeAndProfit(),
-  //       _rangeOptions(),
-  //     ],
-  //   );
-  // }
-
   Container _rangeOptions() {
     return Container(
       height: Get.height * 0.06,
@@ -215,22 +206,3 @@ class HomePage extends StatelessWidget {
             ));
   }
 }
-
-
-
-// ActivityTimeLine(
-//                               amount: -500,
-//                               date: '24/07/2022',
-//                               name: 'Faturalar'),
-//                           ActivityTimeLine(
-//                               amount: -400,
-//                               date: '25/07/2022',
-//                               name: 'Online Alışveriş'),
-//                           ActivityTimeLine(
-//                               amount: -800,
-//                               date: '27/07/2022',
-//                               name: 'Mutfak Alışverişi'),
-//                           ActivityTimeLine(
-//                               amount: -2000, date: '28/07/2022', name: 'kira'),
-//                           ActivityTimeLine(
-//                               amount: 11000, date: '31/07/2022', name: 'Maaş')
