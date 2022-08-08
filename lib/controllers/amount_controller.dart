@@ -15,6 +15,7 @@ class AmountController extends GetxController {
   List<Amount> get amountList => _amountList;
   String get selectedRange => _selectedRange.value;
   double get netAmount => _netAmount.value;
+  
   bool get isLoading => _isLoading.value;
   bool get rangeCrossFadeBool => _rangeCrossFadeBool.value;
 
@@ -25,6 +26,8 @@ class AmountController extends GetxController {
     getAmountList();
     //print('deneme: ${amountOperations.deneme()}');
   }
+
+  
 
   // getAmountList() async {
   //   _isLoading.value = true;
@@ -60,6 +63,8 @@ class AmountController extends GetxController {
     _netAmount.value = net;
     update();
   }
+
+  
 
   // getAmountList() async {
   //   _isLoading.value = true;
