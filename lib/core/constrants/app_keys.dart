@@ -14,5 +14,10 @@ class AppKeys {
   static String categoryHeader = 'Kategori';
   static String updateText = 'Güncelle';
   static String dateText = 'Tarih';
+  static String dayText = 'Gün';
+  static String hourText = 'Saat';
+  static String minuteText = 'Dakika';
+  static String frequencyRecurrence = 'Tekrarlanma sıklığı';
+  static String lastPeriodDate = 'Periyodun sonlanma tarihi';
 
 }
