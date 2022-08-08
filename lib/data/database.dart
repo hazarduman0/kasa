@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:kasa/data/models/amount.dart';
 import 'package:kasa/data/models/category.dart';
+import 'package:kasa/data/models/period.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -31,7 +32,7 @@ class DatabaseRepository {
     const notNullableTextType = 'TEXT NOT NULL';
     const nullableTextType = 'TEXT';
     const boolType = 'BOOLEAN NOT NULL';
-    // const integerType = 'INTEGER NOT NULL';
+    const integerType = 'INTEGER NOT NULL';
     const realType = 'REAL NOT NULL';
 
     await db.execute('''
@@ -52,6 +53,15 @@ class DatabaseRepository {
       ${CategoryFields.isIncome} $boolType
     )
 ''');
+
+    await db.execute('''
+    CREATE TABLE $tablePeriod (
+      ${PeriodFields.id} $idType,
+      ${PeriodFields.amountId} $integerType,
+      ${PeriodFields.duration} $notNullableTextType,
+      FOREIGN KEY (${PeriodFields.amountId}) REFERENCES $tableAmount (${AmountFields.id}) ON DELETE CASCADE
+    )
+  ''');
 
     await db.insert(tableCategory,
         Category(id: 1, category: 'AİDAT', isIncome: false).toJson());
