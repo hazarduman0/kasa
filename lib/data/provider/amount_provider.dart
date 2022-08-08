@@ -16,6 +16,18 @@ class AmountOperations {
     return amount.copy(id: id);
   }
 
+  // Future<List<Amount>> insertDataByFrequency(List<Amount> amountList, /*Duration frequency, DateTime periodEndDate*/) async {
+  //   final db = await dbRepository.database;
+
+  //   List<Amount> tempAmountList = [];
+
+  //   for(var amount in amountList){
+  //     final id = await db.insert(tableAmount, amount.toJson());
+  //     tempAmountList.add(amount.copy(id: id));
+  //   }
+  //   return tempAmountList;
+  // }
+
   Future<int> updateAmount(Amount amount) async {
     final db = await dbRepository.database;
 
@@ -63,6 +75,8 @@ class AmountOperations {
 
     return result.map((json) => Amount.fromJson(json)).toList();
   }
+
+
 
   // Future<List<Amount>> getAmountList() async {
   //   final db = await dbRepository.database;
