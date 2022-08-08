@@ -58,6 +58,14 @@ class AppKeysTextStyle {
     fontWeight: FontWeight.w400,
     fontSize: Get.width * 0.04
   );
+  static TextStyle timePeriodTextStyle = TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+    fontSize: Get.width * 0.05
+  );
+  // static TextStyle isFixedHeadersTextStyle = TextStyle();
+
+  
   // static TextStyle selectedButtonTextStyle = TextStyle(
   //   color: AppColors.bakeryBox,
   //   fontWeight: FontWeight.bold,
