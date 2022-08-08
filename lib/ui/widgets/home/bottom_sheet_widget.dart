@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasa/controllers/amount_controller.dart';
@@ -8,6 +9,7 @@ import 'package:kasa/core/constrants/app_keys.dart';
 import 'package:kasa/core/constrants/app_keys_textstyle.dart';
 import 'package:kasa/data/models/amount.dart';
 import 'package:kasa/data/provider/amount_provider.dart';
+import 'package:kasa/ui/widgets/home/fixed_time_picker.dart';
 
 class BottomSheetWidget extends StatefulWidget {
   BottomSheetWidget({Key? key}) : super(key: key);
@@ -27,40 +29,231 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 
   AmountOperations amountOperations = AmountOperations();
 
+  DateTime tempDateTime = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<InputController>(builder: (context) {
-      return SingleChildScrollView(
+    return Container(
+      height: Get.height * 0.8,
+      width: Get.width,
+      decoration: BoxDecoration(
+          color: AppColors.bakeryBox,
+          borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0))),
+      child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics()),
-        child: Container(
-          height: Get.height * 0.8,
-          width: Get.width,
-          decoration: BoxDecoration(
-              color: AppColors.bakeryBox,
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(15.0),
-                  topRight: Radius.circular(15.0))),
-          child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: Get.width * 0.03),
-              child: Form(
-                key: key,
+        child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: Get.width * 0.03),
+            child: Form(
+              key: key,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _bottomSheetCancelButton(),
+                  SizedBox(height: Get.height * 0.05),
+                  _categorySelectBox(),
+                  SizedBox(height: Get.height * 0.03),
+                  _descriptionForm(),
+                  SizedBox(height: Get.height * 0.03),
+                  _amountFormField(),
+                  SizedBox(height: Get.height * 0.03),
+                  //const FixedTimePicker(),
+                  _fixedTimePicker(),
+                  SizedBox(height: Get.height * 0.01),
+                  _saveButton(),
+                ],
+              ),
+            )),
+      ),
+    );
+  }
+
+  GetBuilder _fixedTimePicker() {
+    return GetBuilder<InputController>(builder: (input) {
+      return AnimatedContainer(
+        //height: input.isFixed ? Get.height * 0.15 : Get.height * 0.1,
+        width: Get.width,
+        constraints: BoxConstraints(minHeight: Get.height * 0.1),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          color: Colors.white,
+        ),
+        duration: const Duration(milliseconds: 150),
+        child: !input.isFixed
+            ? Center(child: _checkboxListTile())
+            : Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _bottomSheetCancelButton(),
-                    SizedBox(height: Get.height * 0.05),
-                    _categorySelectBox(),
-                    SizedBox(height: Get.height * 0.03),
-                    _descriptionForm(),
-                    SizedBox(height: Get.height * 0.03),
-                    _amountFormField(),
-                    SizedBox(height: Get.height * 0.01),
-                    _saveButton(),
+                    _checkboxListTile(),
+                    const Divider(),
+                    _selectPeriodText(),
+                    _setTimePeriod(),
+                    const Divider(),
+                    // input.isValidTimePeriod
+                    //     ? const SizedBox.shrink()
+                    //     : const Text('Lütfen 0 dan büyük bir değer giriniz',
+                    //         style: TextStyle(color: Colors.red))
+                    _lasPeriodDateText(),
+                    _lastPeriodDate(),
                   ],
                 ),
-              )),
-        ),
+              ),
+      );
+    });
+  }
+
+  Padding _lasPeriodDateText() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: Get.width * 0.03),
+      child: Text('${AppKeys.lastPeriodDate}:'),
+    );
+  }
+
+  SizedBox _lastPeriodDate() {
+    return SizedBox(
+      height: Get.height * 0.25,
+      width: Get.width,
+      child: CupertinoDatePicker(
+        mode: CupertinoDatePickerMode.date,
+        minimumYear: DateTime.now().year,
+        //minimumDate: DateTime.now(),
+        initialDateTime: DateTime.now(),
+        onDateTimeChanged: (value) {
+          print('dateTime: $value');
+          //inputController.setLastPeriodDate(value); //her seferinde çalıştığında akıcılığı bozuyor.
+          tempDateTime =
+              value; //save kısmında gerekli kontrolleri yaptıktan sonra controllere aktar.
+        },
+      ),
+    );
+  }
+
+  //0 girilme durumlarını, dispose olduğundaki durumlarını ayarla ve sayı dışında değer girilmesini engelle.
+  //periyot kısmına girilecek maxlength i ayarla, altta değer gözükmesin
+  Padding _setTimePeriod() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+          height: Get.height * 0.1,
+          width: Get.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    height: Get.height * 0.05,
+                    width: Get.width * 0.15,
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      // validator: (value) {
+                      //   if (value != null) {
+                      //     if (int.tryParse(value)! < 0) {
+                      //       // Get.snackbar('Yanlış Değer',
+                      //       //     'Lütfen 0 dan büyük bir değer giriniz');
+                      //       inputController.setValidTimePeriod(false);
+                      //       //return '';
+                      //     }
+                      //   } else {
+                      //     inputController.setValidTimePeriod(true);
+                      //   }
+                      // },
+                      //validasyon yerine gereksiz tuşlara basmasını engelle
+                      onChanged: (value) {
+                        inputController.setDayPeriod(value);
+                      },
+                      // onSaved: (newValue) {
+                      //   inputController.setDayPeriod(newValue);
+                      // },
+                    ),
+                  ),
+                  SizedBox(width: Get.width * 0.01),
+                  Text(AppKeys.dayText,
+                      style: AppKeysTextStyle.timePeriodTextStyle),
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    height: Get.height * 0.05,
+                    width: Get.width * 0.15,
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      // validator: (value) {
+                      //   snackBarWarn(value);
+                      // },
+                      //validasyon yerine gereksiz tuşlara basmasını engelle
+                      onChanged: (value) {
+                        inputController.setHourPeriod(value);
+                      },
+                      // onSaved: (newValue) {
+                      //   inputController.setHourPeriod(newValue);
+                      // },
+                    ),
+                  ),
+                  SizedBox(width: Get.width * 0.01),
+                  Text(AppKeys.hourText,
+                      style: AppKeysTextStyle.timePeriodTextStyle),
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    height: Get.height * 0.05,
+                    width: Get.width * 0.15,
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      // validator: (value) {
+                      //   snackBarWarn(value);
+                      // },
+                      //validasyon yerine gereksiz tuşlara basmasını engelle
+                      onChanged: (value) {
+                        inputController.setMinutePeriod(value);
+                      },
+                      // onSaved: (newValue) {
+                      //   inputController.setMinutePeriod(newValue);
+                      // },
+                    ),
+                  ),
+                  SizedBox(width: Get.width * 0.01),
+                  Text(AppKeys.minuteText,
+                      style: AppKeysTextStyle.timePeriodTextStyle),
+                ],
+              ),
+            ],
+          )),
+    );
+  }
+
+  // snackBarWarn(String? value) {
+  //   if (value != null) {
+  //     if (int.tryParse(value)! < 0) {
+  //       Get.snackbar('Yanlış Değer', 'Lütfen 0 dan büyük bir değer giriniz');
+  //     }
+  //   }
+  // }
+
+  Padding _selectPeriodText() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: Get.width * 0.03),
+      child: Text('${AppKeys.frequencyRecurrence}:'),
+    );
+  }
+
+  GetBuilder _checkboxListTile() {
+    return GetBuilder<InputController>(builder: (input) {
+      return CheckboxListTile(
+        title: const Text('Sabit'),
+        //subtitle: input.isFixed ? const Text('Tekrar Periyodu') : const SizedBox.shrink(),
+        value: input.isFixed,
+        onChanged: (value) {
+          input.setIsFixed(value!);
+        },
       );
     });
   }
@@ -79,18 +272,42 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 
   validateAndSave() async {
     final _isValid = key.currentState!.validate();
+
     if (_isValid) {
+      // inputController.setLastPeriodDate(tempDateTime);
+      // inputController.setFrequency();
+      // inputController.insertDataByFrequency();
       key.currentState!.save();
-      await amountOperations.createAmount(Amount( //controllere yaptır
-          category: inputController.selectedCategoryText,
-          description: inputController.descriptionText,
-          amount: inputController.isRemove ? (-inputController.amountDouble) : inputController.amountDouble,
-          isFixed: false,
-          dateTime: DateTime.now()));
+      if (inputController.isFixed) {
+        inputController.setLastPeriodDate(tempDateTime);
+        inputController.setFrequency();
+        inputController.insertDataByFrequency(Amount(
+            category: inputController.selectedCategoryText,
+            description: inputController.descriptionText,
+            amount: inputController.isRemove
+                ? (-inputController.amountDouble)
+                : inputController.amountDouble,
+            isFixed: true,
+            dateTime: DateTime.now()));
+      } else {
+        await amountOperations.createAmount(Amount(
+            //controllere yaptır
+            category: inputController.selectedCategoryText,
+            description: inputController.descriptionText,
+            amount: inputController.isRemove
+                ? (-inputController.amountDouble)
+                : inputController.amountDouble,
+            isFixed: false,
+            dateTime: DateTime.now()));
+      }
+
       amountController.getAmountList();
+      inputController.setIsFixed(false);
       Get.back();
     }
   }
+
+  sheetDispose() {}
 
   SizedBox _amountFormField() {
     return SizedBox(
@@ -198,6 +415,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
           padding: const EdgeInsets.all(15.0),
           child: GestureDetector(
               onTap: () {
+                inputController.setIsFixed(false);
                 Get.back();
               },
               child: Text(AppKeys.cancel,
