@@ -83,8 +83,12 @@ class AmountDetailPage extends StatelessWidget {
                         _descriptionForm(),
                         SizedBox(height: Get.height * 0.05),
                         _dateContainer(),
-                        SizedBox(height: Get.height * 0.05),
-                        _periodInteract(),
+                        input.tempAmount!.isFixed
+                            ? SizedBox(height: Get.height * 0.05)
+                            : const SizedBox.shrink(),
+                        input.tempAmount!.isFixed
+                            ? _periodInteract()
+                            : const SizedBox.shrink(),
                         SizedBox(height: Get.height * 0.05),
                         _amountForm(),
                         SizedBox(height: Get.height * 0.05),
@@ -140,60 +144,76 @@ class AmountDetailPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           TextButton(
-              onPressed: input.tempAmount!.isFixed
-                  // || input.isTextButtonPressed
-                  ? () {
-                      //db den gelen bilgiye göre controllerdeki bilgiyi güncelle önce
+            onPressed: () {
+              Get.defaultDialog(
+                  title: 'Periyot kaldırılacak',
+                  middleText: 'Periyodu kaldırmak istediğinizden emin misiniz?',
+                  textCancel: 'iptal',
+                  textConfirm: 'Kaldır',
+                  onConfirm: () {
+                    input.deleteDataByFrequency(input.tempAmount!);
+                    input.updatePeriod(
+                        input.tempAmount!.copy(isFixed: false, period: null));
+                    Get.back();
+                  },
+                  confirmTextColor: AppColors.silkenRuby,
+                  buttonColor: Colors.white);
+            },
+            // onPressed: input.tempAmount!.isFixed
+            //     // || input.isTextButtonPressed
+            //     ? () {
+            //         //db den gelen bilgiye göre controllerdeki bilgiyi güncelle önce
 
-                      input.setChoosenTimePeriod(input.tempAmount!.period!);
-                      Get.defaultDialog(
-                        title: 'Periyot Güncelle',
-                        titlePadding: const EdgeInsets.only(top: 30),
-                        middleText: '',
-                        confirm: const PeriodGridView(),
-                        buttonColor: Colors.white,
-                        contentPadding: const EdgeInsets.only(bottom: 30),
-                      );
-                    }
-                  : () {
-                      input.setChoosenTimePeriod('30 gün');
-                      //input.setTextButtonPress(true);
-                      Get.defaultDialog(
-                        title: 'Periyot ekle',
-                        titlePadding: const EdgeInsets.only(top: 30),
-                        middleText: '',
-                        confirm: const PeriodGridView(),
-                        buttonColor: Colors.white,
-                        contentPadding: const EdgeInsets.only(bottom: 30),
-                      );
-                    },
-              child: Text(input.tempAmount!.isFixed
-                  // ||input.isTextButtonPressed
-                  ? 'Periyot değiştir'
-                  : 'Periyot ekle +')),
+            //         input.setChoosenTimePeriod(input.tempAmount!.period!);
+            //         Get.defaultDialog(
+            //           title: 'Periyot Güncelle',
+            //           titlePadding: const EdgeInsets.only(top: 30),
+            //           middleText: '',
+            //           confirm: const PeriodGridView(),
+            //           buttonColor: Colors.white,
+            //           contentPadding: const EdgeInsets.only(bottom: 30),
+            //         );
+            //       }
+            // : () {
+            //     input.setChoosenTimePeriod('30 gün');
+            //     //input.setTextButtonPress(true);
+            //     Get.defaultDialog(
+            //       title: 'Periyot ekle',
+            //       titlePadding: const EdgeInsets.only(top: 30),
+            //       middleText: '',
+            //       confirm: const PeriodGridView(),
+            //       buttonColor: Colors.white,
+            //       contentPadding: const EdgeInsets.only(bottom: 30),
+            //     );
+            //   },
+            child: const Text('Periyodu kaldır'),
+            // Text(input.tempAmount!.isFixed
+            //     // ||input.isTextButtonPressed
+            //     ? 'Periyot değiştir'
+            //     : 'Periyot ekle +')),
+          ),
           Row(
             children: [
-              input.tempAmount!.isFixed
-                  // || input.isTextButtonPressed
-                  ? IconButton(
-                      onPressed: () {
-                        Get.defaultDialog(
-                            title: 'Periyot kaldırılacak',
-                            middleText:
-                                'Periyodu kaldırmak istediğinizden emin misiniz?',
-                            textCancel: 'iptal',
-                            textConfirm: 'Kaldır',
-                            onConfirm: () {
-                              input.deleteDataByFrequency(input.tempAmount!);
-                              input.updatePeriod(input.tempAmount!
-                                  .copy(isFixed: false, period: null));
-                              Get.back();
-                            },
-                            confirmTextColor: AppColors.silkenRuby,
-                            buttonColor: Colors.white);
-                      },
-                      icon: Icon(Icons.delete, color: AppColors.silkenRuby))
-                  : const SizedBox.shrink(),
+              // input.tempAmount!.isFixed
+              //     ? IconButton(
+              //         onPressed: () {
+              //           Get.defaultDialog(
+              //               title: 'Periyot kaldırılacak',
+              //               middleText:
+              //                   'Periyodu kaldırmak istediğinizden emin misiniz?',
+              //               textCancel: 'iptal',
+              //               textConfirm: 'Kaldır',
+              //               onConfirm: () {
+              //                 input.deleteDataByFrequency(input.tempAmount!);
+              //                 input.updatePeriod(input.tempAmount!
+              //                     .copy(isFixed: false, period: null));
+              //                 Get.back();
+              //               },
+              //               confirmTextColor: AppColors.silkenRuby,
+              //               buttonColor: Colors.white);
+              //         },
+              //         icon: Icon(Icons.delete, color: AppColors.silkenRuby))
+              //     : const SizedBox.shrink(),
               IconButton(
                   onPressed: () {},
                   icon: const Icon(Icons.info_outlined, color: Colors.grey)),
