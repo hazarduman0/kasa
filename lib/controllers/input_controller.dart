@@ -162,23 +162,28 @@ class InputController extends GetxController {
 
     for (int i = 0; i <= loopInt; i++) {
       await amountOperations.createAmount(amount.copy(dateTime: tempDate));
-      tempDate = tempDate.subtract(
+      tempDate = tempDate.add(
           Duration(minutes: Utils.byMinutes(_choosenTimePeriod.value)));
     }
   }
 
   deleteDataByFrequency(Amount amount) async {
-    if (amount == null) return;
+    //if (amount == null) return;
+
+    DateTime dateTime = amount.dateTime;
+    Duration duration = Duration(minutes: Utils.byMinutes(amount.period!));
 
     while (true) {
       String dateString =
-          '${(amount.dateTime).subtract(Duration(minutes: Utils.byMinutes(amount.period!)))}';
+          '${(dateTime).add(duration)}';
+
+      dateTime = dateTime.add(duration);   
 
       String timeFormat =
           '${dateString.substring(0, 10)}T${dateString.substring(11)}';
 
       var id = await amountOperations.getIdByDate(timeFormat);
-      if(id == null) break;
+      if (id == null) break;
       amountOperations.deleteAmount(id);
     }
   }
