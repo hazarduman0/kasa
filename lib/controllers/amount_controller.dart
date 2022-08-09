@@ -23,19 +23,21 @@ class AmountController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    //getAmountListc();
     getAmountList();
+    
     //print('deneme: ${amountOperations.deneme()}');
   }
 
   
 
-  // getAmountList() async {
-  //   _isLoading.value = true;
-  //   update();
-  //   List<Amount> amountResponse = await amountOperations.deneme();
-  //   _amountList.value = amountResponse;
-  //   _isLoading.value = false;
-  //   update();
+  // getAmountListc() async {
+  
+  //   List<Amount> amountResponse = await amountOperations.getAmountList();
+  //   for(var amount in amountResponse){
+  //     print(amount.dateTime);
+  //   }
+    
   // }
 
   getAmountList() async {
