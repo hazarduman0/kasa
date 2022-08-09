@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get.dart';
+
 import 'package:kasa/bindings/await_bindings.dart';
 import 'package:kasa/ui/screens/home_page.dart';
 
-void main() async{
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+
+  
   await AwaitBindings().dependencies();
+
   runApp(const MyApp());
 }
 
