@@ -3,6 +3,9 @@ import 'package:kasa/data/models/amount.dart';
 
 class AmountOperations {
   DatabaseRepository dbRepository = DatabaseRepository.instance;
+  // PeriodOperations periodOperations = PeriodOperations();
+  
+  // final box = GetStorage();
 
   //create
   //read
@@ -13,6 +16,11 @@ class AmountOperations {
     final db = await dbRepository.database;
 
     final id = await db.insert(tableAmount, amount.toJson());
+
+    // if (amount.isFixed) {
+    //   await periodOperations.createPeriod(
+    //       Period(amountId: id, duration: box.read('period')));
+    // }
     return amount.copy(id: id);
   }
 
@@ -37,6 +45,18 @@ class AmountOperations {
       where: '${AmountFields.id} = ?',
       whereArgs: [amount.id],
     );
+  }
+
+  Future<int?> getIdByDate(String date) async {
+    final db = await dbRepository.database;
+
+    final result = await db.query(
+      tableAmount,
+      where: '${AmountFields.dateTime} = ?',
+      whereArgs: [date]
+    );
+
+    return result.map((json) => Amount.fromJson(json)).toList().first.id!;
   }
 
   Future<int> deleteAmount(int? id) async {
@@ -76,18 +96,16 @@ class AmountOperations {
     return result.map((json) => Amount.fromJson(json)).toList();
   }
 
+  Future<List<Amount>> getAmountList() async {
+    final db = await dbRepository.database;
 
+    const orderBy = '${AmountFields.dateTime} DESC';
 
-  // Future<List<Amount>> getAmountList() async {
-  //   final db = await dbRepository.database;
+    final result = await db.query(
+      tableAmount,
+      orderBy: orderBy,
+    );
 
-  //   const orderBy = '${AmountFields.dateTime} DESC';
-
-  //   final result = await db.query(
-  //     tableAmount,
-  //     orderBy: orderBy,
-  //   );
-
-  //   return result.map((json) => Amount.fromJson(json)).toList();
-  // }
+    return result.map((json) => Amount.fromJson(json)).toList();
+  }
 }
