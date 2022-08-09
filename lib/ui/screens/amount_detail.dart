@@ -10,11 +10,12 @@ import 'package:kasa/core/constrants/app_keys_textstyle.dart';
 import 'package:kasa/data/models/amount.dart';
 import 'package:kasa/data/provider/amount_provider.dart';
 import 'package:kasa/ui/screens/home_page.dart';
+import 'package:kasa/ui/widgets/home/period_select_gridview.dart';
 
 class AmountDetailPage extends StatelessWidget {
-  AmountDetailPage({Key? key, required this.amount}) : super(key: key);
+  AmountDetailPage({Key? key}) : super(key: key);
 
-  Amount amount;
+  //Amount amount;
 
   final InputController inputController = Get.find();
 
@@ -28,9 +29,9 @@ class AmountDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('amountDate: ${amount.dateTime}');
-    print(DateTime.now());
-    print('1 hours ago: ${( DateTime.now()).subtract( const Duration(days: 7))}');
+    // print('amountDate: ${amount.dateTime}');
+    // print(DateTime.now());
+    // print('1 hours ago: ${( DateTime.now()).subtract( const Duration(days: 7))}');
     return GetBuilder<InputController>(builder: (input) {
       return Stack(
         children: [
@@ -38,6 +39,7 @@ class AmountDetailPage extends StatelessWidget {
             appBar: AppBar(
               leading: IconButton(
                   onPressed: () {
+                    //input.setTextButtonPress(false);
                     Get.back();
                   },
                   icon: const Icon(Icons.arrow_back_ios_new_outlined,
@@ -55,7 +57,7 @@ class AmountDetailPage extends StatelessWidget {
                         buttonColor: Colors.white,
                         title: 'Silinecek',
                         onConfirm: () {
-                          amountOperations.deleteAmount(amount.id);
+                          amountOperations.deleteAmount(input.tempAmount!.id);
                           amountController.getAmountList(); //controllere yaptır
                           Get.to(() => HomePage());
                         },
@@ -81,6 +83,8 @@ class AmountDetailPage extends StatelessWidget {
                         _descriptionForm(),
                         SizedBox(height: Get.height * 0.05),
                         _dateContainer(),
+                        SizedBox(height: Get.height * 0.05),
+                        _periodInteract(),
                         SizedBox(height: Get.height * 0.05),
                         _amountForm(),
                         SizedBox(height: Get.height * 0.05),
@@ -123,6 +127,98 @@ class AmountDetailPage extends StatelessWidget {
                 )
               : const SizedBox.shrink()
         ],
+      );
+    });
+  }
+
+  GetBuilder<InputController> _periodInteract() {
+    return GetBuilder<InputController>(builder: (input) {
+      //periyot eklenme işlemlerini db tarafında hallet
+      //periyodu olanın dialogunda periyodu kaldır seçeneği olsun
+      //periyot değiştiğinde buttonun textinde değişiklik gerçekleşsin
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TextButton(
+              onPressed: input.tempAmount!.isFixed
+                  // || input.isTextButtonPressed
+                  ? () {
+                      //db den gelen bilgiye göre controllerdeki bilgiyi güncelle önce
+
+                      input.setChoosenTimePeriod(input.tempAmount!.period!);
+                      Get.defaultDialog(
+                        title: 'Periyot Güncelle',
+                        titlePadding: const EdgeInsets.only(top: 30),
+                        middleText: '',
+                        confirm: const PeriodGridView(),
+                        buttonColor: Colors.white,
+                        contentPadding: const EdgeInsets.only(bottom: 30),
+                      );
+                    }
+                  : () {
+                      input.setChoosenTimePeriod('30 gün');
+                      //input.setTextButtonPress(true);
+                      Get.defaultDialog(
+                        title: 'Periyot ekle',
+                        titlePadding: const EdgeInsets.only(top: 30),
+                        middleText: '',
+                        confirm: const PeriodGridView(),
+                        buttonColor: Colors.white,
+                        contentPadding: const EdgeInsets.only(bottom: 30),
+                      );
+                    },
+              child: Text(input.tempAmount!.isFixed
+                  // ||input.isTextButtonPressed
+                  ? 'Periyot değiştir'
+                  : 'Periyot ekle +')),
+          Row(
+            children: [
+              input.tempAmount!.isFixed
+                  // || input.isTextButtonPressed
+                  ? IconButton(
+                      onPressed: () {
+                        Get.defaultDialog(
+                            title: 'Periyot kaldırılacak',
+                            middleText:
+                                'Periyodu kaldırmak istediğinizden emin misiniz?',
+                            textCancel: 'iptal',
+                            textConfirm: 'Kaldır',
+                            onConfirm: () {
+                              input.deleteDataByFrequency(input.tempAmount!);
+                              input.updatePeriod(input.tempAmount!
+                                  .copy(isFixed: false, period: null));
+                              Get.back();
+                            },
+                            confirmTextColor: AppColors.silkenRuby,
+                            buttonColor: Colors.white);
+                      },
+                      icon: Icon(Icons.delete, color: AppColors.silkenRuby))
+                  : const SizedBox.shrink(),
+              IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.info_outlined, color: Colors.grey)),
+            ],
+          )
+        ],
+      );
+    });
+  }
+
+  GetBuilder _timePeriodGrid(String text) {
+    return GetBuilder<InputController>(builder: (input) {
+      return Container(
+        //height: Get.height * 0.01,
+        width: Get.width / 2,
+        child: Center(
+            child: TextButton(
+                onPressed: () {
+                  input.setChoosenTimePeriod(text);
+                },
+                child: Text(text))),
+        decoration: BoxDecoration(
+            color: input.choosenTimePeriod == text
+                ? Colors.blue.shade100
+                : Colors.transparent),
       );
     });
   }
@@ -175,6 +271,7 @@ class AmountDetailPage extends StatelessWidget {
         ),
         Container(
           width: Get.width,
+          decoration: _boxDecoration(),
           child: Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -183,17 +280,20 @@ class AmountDetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(DateFormat.yMd().format(amount.dateTime),
+                  Text(
+                      DateFormat.yMd()
+                          .format(inputController.tempAmount!.dateTime),
                       style: AppKeysTextStyle.categoryTextStyle),
                   SizedBox(height: Get.height * 0.01),
-                  Text(DateFormat.Hm().format(amount.dateTime),
+                  Text(
+                      DateFormat.Hm()
+                          .format(inputController.tempAmount!.dateTime),
                       style: AppKeysTextStyle.categoryTextStyle
                           .copyWith(fontSize: Get.width * 0.05))
                 ],
               ),
             ),
           ),
-          decoration: _boxDecoration(),
         )
       ],
     );
@@ -209,15 +309,15 @@ class AmountDetailPage extends StatelessWidget {
               onPressed: () {
                 validateAndUpdate();
               },
-              child: Text(AppKeys.updateText,
-                  style: AppKeysTextStyle.amountDetailHeaderTextStyle
-                      .copyWith(color: Colors.white)),
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0)),
                 elevation: 0.0,
                 primary: AppColors.enchantingSapphire,
               ),
+              child: Text(AppKeys.updateText,
+                  style: AppKeysTextStyle.amountDetailHeaderTextStyle
+                      .copyWith(color: Colors.white)),
             )));
   }
 
@@ -226,12 +326,15 @@ class AmountDetailPage extends StatelessWidget {
     if (isValid) {
       formKey.currentState!.save();
       amountOperations.updateAmount(Amount(
-          id: amount.id,
+          id: inputController.tempAmount!.id,
           category: inputController.selectedCategoryText,
           description: inputController.descriptionText,
           amount: inputController.amountDouble,
-          isFixed: amount.isFixed,
-          dateTime: amount.dateTime));
+          isFixed: inputController.tempAmount!.isFixed ? true : false,
+          dateTime: inputController.tempAmount!.dateTime,
+          period: inputController.tempAmount!.isFixed
+              ? inputController.tempAmount!.period
+              : null));
       amountController.getAmountList();
       Get.back();
     }
@@ -244,12 +347,14 @@ class AmountDetailPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            amount.amount >= 0 ? AppKeys.incomeText : AppKeys.expense,
+            inputController.tempAmount!.amount >= 0
+                ? AppKeys.incomeText
+                : AppKeys.expense,
             style: AppKeysTextStyle.amountDetailHeaderTextStyle,
           ),
         ),
         TextFormField(
-          initialValue: amount.amount.toString(),
+          initialValue: inputController.tempAmount!.amount.toString(),
           cursorColor: AppColors.blackHowl,
           onSaved: (newValue) {
             inputController.setAmount(newValue);
@@ -282,7 +387,7 @@ class AmountDetailPage extends StatelessWidget {
           ),
         ),
         TextFormField(
-          initialValue: amount.description,
+          initialValue: inputController.tempAmount!.description,
           maxLength: 30,
           cursorColor: AppColors.blackHowl,
           onSaved: (newValue) {
