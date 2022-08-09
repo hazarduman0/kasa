@@ -10,6 +10,7 @@ import 'package:kasa/core/constrants/app_keys_textstyle.dart';
 import 'package:kasa/data/models/amount.dart';
 import 'package:kasa/data/provider/amount_provider.dart';
 import 'package:kasa/ui/widgets/home/fixed_time_picker.dart';
+import 'package:kasa/ui/widgets/home/period_select_gridview.dart';
 
 class BottomSheetWidget extends StatefulWidget {
   BottomSheetWidget({Key? key}) : super(key: key);
@@ -89,7 +90,9 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                     _checkboxListTile(),
                     const Divider(),
                     _selectPeriodText(),
-                    _setTimePeriod(),
+                    const PeriodGridView(),
+                    //_choosePeriodScale(),
+                    // _setTimePeriod(),
                     const Divider(),
                     // input.isValidTimePeriod
                     //     ? const SizedBox.shrink()
@@ -107,7 +110,22 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   Padding _lasPeriodDateText() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Get.width * 0.03),
-      child: Text('${AppKeys.lastPeriodDate}:'),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('${AppKeys.lastPeriodDate}:'),
+          IconButton(
+              onPressed: () {
+                Get.defaultDialog(
+                    title: '',
+                    middleText:
+                        'Seçilmiş olan tekrarlanma periyotların son tarihi belirlenir. Bu tarihten sonra periyodik olarak ekleme işlemi sona erer.',
+                    textCancel: 'Tamam',
+                    buttonColor: Colors.white);
+              },
+              icon: const Icon(Icons.info_outlined, color: Colors.grey))
+        ],
+      ),
     );
   }
 
@@ -130,118 +148,25 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     );
   }
 
-  //0 girilme durumlarını, dispose olduğundaki durumlarını ayarla ve sayı dışında değer girilmesini engelle.
-  //periyot kısmına girilecek maxlength i ayarla, altta değer gözükmesin
-  Padding _setTimePeriod() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-          height: Get.height * 0.1,
-          width: Get.width,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    height: Get.height * 0.05,
-                    width: Get.width * 0.15,
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      // validator: (value) {
-                      //   if (value != null) {
-                      //     if (int.tryParse(value)! < 0) {
-                      //       // Get.snackbar('Yanlış Değer',
-                      //       //     'Lütfen 0 dan büyük bir değer giriniz');
-                      //       inputController.setValidTimePeriod(false);
-                      //       //return '';
-                      //     }
-                      //   } else {
-                      //     inputController.setValidTimePeriod(true);
-                      //   }
-                      // },
-                      //validasyon yerine gereksiz tuşlara basmasını engelle
-                      onChanged: (value) {
-                        inputController.setDayPeriod(value);
-                      },
-                      // onSaved: (newValue) {
-                      //   inputController.setDayPeriod(newValue);
-                      // },
-                    ),
-                  ),
-                  SizedBox(width: Get.width * 0.01),
-                  Text(AppKeys.dayText,
-                      style: AppKeysTextStyle.timePeriodTextStyle),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    height: Get.height * 0.05,
-                    width: Get.width * 0.15,
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      // validator: (value) {
-                      //   snackBarWarn(value);
-                      // },
-                      //validasyon yerine gereksiz tuşlara basmasını engelle
-                      onChanged: (value) {
-                        inputController.setHourPeriod(value);
-                      },
-                      // onSaved: (newValue) {
-                      //   inputController.setHourPeriod(newValue);
-                      // },
-                    ),
-                  ),
-                  SizedBox(width: Get.width * 0.01),
-                  Text(AppKeys.hourText,
-                      style: AppKeysTextStyle.timePeriodTextStyle),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    height: Get.height * 0.05,
-                    width: Get.width * 0.15,
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      // validator: (value) {
-                      //   snackBarWarn(value);
-                      // },
-                      //validasyon yerine gereksiz tuşlara basmasını engelle
-                      onChanged: (value) {
-                        inputController.setMinutePeriod(value);
-                      },
-                      // onSaved: (newValue) {
-                      //   inputController.setMinutePeriod(newValue);
-                      // },
-                    ),
-                  ),
-                  SizedBox(width: Get.width * 0.01),
-                  Text(AppKeys.minuteText,
-                      style: AppKeysTextStyle.timePeriodTextStyle),
-                ],
-              ),
-            ],
-          )),
-    );
-  }
-
-  // snackBarWarn(String? value) {
-  //   if (value != null) {
-  //     if (int.tryParse(value)! < 0) {
-  //       Get.snackbar('Yanlış Değer', 'Lütfen 0 dan büyük bir değer giriniz');
-  //     }
-  //   }
-  // }
-
   Padding _selectPeriodText() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Get.width * 0.03),
-      child: Text('${AppKeys.frequencyRecurrence}:'),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('${AppKeys.frequencyRecurrence}:'),
+          IconButton(
+              onPressed: () {
+                Get.defaultDialog(
+                    title: '',
+                    middleText:
+                        'Seçtiğiniz tekrarlanma ölçütüne göre belirlenmiş gelir giderler periyodik olarak eklenirler.',
+                    textCancel: 'Tamam',
+                    buttonColor: Colors.white);
+              },
+              icon: const Icon(Icons.info_outlined, color: Colors.grey))
+        ],
+      ),
     );
   }
 
@@ -288,7 +213,9 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 ? (-inputController.amountDouble)
                 : inputController.amountDouble,
             isFixed: true,
-            dateTime: DateTime.now()));
+            dateTime: DateTime.now(),
+            period: inputController.choosenTimePeriod
+            ));
       } else {
         await amountOperations.createAmount(Amount(
             //controllere yaptır
@@ -298,7 +225,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 ? (-inputController.amountDouble)
                 : inputController.amountDouble,
             isFixed: false,
-            dateTime: DateTime.now()));
+            dateTime: DateTime.now(),
+            ));
       }
 
       amountController.getAmountList();
@@ -436,52 +364,4 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     }
     return dropDownMenuItems;
   }
-
-  // Padding _buttonRow() {
-  //   return Padding(
-  //     padding: EdgeInsets.symmetric(horizontal: Get.width * 0.01),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         _fixedButton(sheetController.isRemove
-  //             ? AppKeys.fixedExpense
-  //             : AppKeys.fixedIncome),
-  //         _extraButton(
-  //             sheetController.isRemove ? AppKeys.unexpected : AppKeys.extra)
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // SizedBox _extraButton(String name) {
-  //   return SizedBox(
-  //     width: Get.width * 0.43,
-  //     child: ElevatedButton(
-  //         style: ElevatedButton.styleFrom(
-  //             elevation: 0.0,
-  //             primary: !sheetController.isFixedChoosen
-  //                 ? AppColors.enchantingSapphire
-  //                 : AppColors.nieblaAzul),
-  //         onPressed: () {
-  //           sheetController.extraButtonFunc();
-  //         },
-  //         child: Text(name, style: AppKeysTextStyle.buttonTextStyle)),
-  //   );
-  // }
-
-  // SizedBox _fixedButton(String name) {
-  //   return SizedBox(
-  //     width: Get.width * 0.43,
-  //     child: ElevatedButton(
-  //         style: ElevatedButton.styleFrom(
-  //             elevation: 0.0,
-  //             primary: sheetController.isFixedChoosen
-  //                 ? AppColors.enchantingSapphire
-  //                 : AppColors.nieblaAzul),
-  //         onPressed: () {
-  //           sheetController.fixedButtonFunc();
-  //         },
-  //         child: Text(name, style: AppKeysTextStyle.buttonTextStyle)),
-  //   );
-  // }
 }
