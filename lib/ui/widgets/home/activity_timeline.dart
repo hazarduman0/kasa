@@ -36,7 +36,8 @@ class ActivityTimeLine extends StatelessWidget {
         amount.amount > 0
             ? inputController.isRemoveFunc(false)
             : inputController.isRemoveFunc(true);
-        Get.to(() => AmountDetailPage(amount: amount));
+        inputController.setTempAmount(amount);    
+        Get.to(() => AmountDetailPage());
       },
       child: TimelineTile(
         alignment: TimelineAlign.center,
