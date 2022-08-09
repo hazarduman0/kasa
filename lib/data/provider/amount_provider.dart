@@ -56,7 +56,9 @@ class AmountOperations {
       whereArgs: [date]
     );
 
-    return result.map((json) => Amount.fromJson(json)).toList().first.id!;
+    var resultList = result.map((json) => Amount.fromJson(json)).toList();
+    if(resultList.isEmpty) return null;
+    return resultList.first.id;
   }
 
   Future<int> deleteAmount(int? id) async {
