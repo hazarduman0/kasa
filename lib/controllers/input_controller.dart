@@ -1,14 +1,29 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:kasa/core/utils.dart';
 import 'package:kasa/data/models/amount.dart';
 import 'package:kasa/data/provider/amount_provider.dart';
 
 class InputController extends GetxController {
+  @override
+  void onReady() {
+    // TODO: implement onReady
+    super.onReady();
+    log("test");
+  }
+
   AmountOperations amountOperations = AmountOperations();
+
+  final box = GetStorage();
 
   //final RxBool _isFixedChoosen = false.obs;
   final RxBool _isRemove = false.obs;
   final RxBool _editStackBool = false.obs;
   final RxBool _isFixed = false.obs;
+  //final RxBool _isTextButtonPressed = false.obs;
+  final RxBool _isPeriodRemoved = false.obs;
   final RxString _selectedCategoryText = ''.obs;
   final RxString _descriptionText = ''.obs;
   final RxDouble _amountDouble = 0.0.obs;
@@ -17,13 +32,19 @@ class InputController extends GetxController {
   final RxInt _minutePeriod = 0.obs;
   final Rx<DateTime?> _lastPeriodDate = Rxn();
   final Rx<Duration?> _frequency = Rxn();
+  final Rx<Amount?> _tempAmount = Rxn();
+  final RxString _choosenTimePeriod = '30 gün'.obs;
+
   //final RxBool _isValidTimePeriod = true.obs;
 
   //bool get isFixedChoosen => _isFixedChoosen.value;
+  bool get isPeriodRemoved => _isPeriodRemoved.value;
+  //bool get isTextButtonPressed => _isTextButtonPressed.value;
   bool get editBool => _editStackBool.value;
   bool get isRemove => _isRemove.value;
   String get selectedCategoryText => _selectedCategoryText.value;
   String get descriptionText => _descriptionText.value;
+  String get choosenTimePeriod => _choosenTimePeriod.value;
   double get amountDouble => _amountDouble.value;
   int get dayPeriod => _dayPeriod.value;
   int get hourPeriod => _hourPeriod.value;
@@ -31,7 +52,45 @@ class InputController extends GetxController {
   bool get isFixed => _isFixed.value;
   DateTime? get lastPeriodDate => _lastPeriodDate.value;
   Duration? get frequency => _frequency.value;
+  Amount? get tempAmount => _tempAmount.value;
   //bool get isValidTimePeriod => _isValidTimePeriod.value;
+
+  setTempAmount(Amount amount) {
+    _tempAmount.value = amount;
+    update();
+  }
+
+  updatePeriod(Amount? amount) {
+    //_isPeriodRemoved.value = value;
+    if (amount != null) {
+      amountOperations.updateAmount(amount);
+      _tempAmount.value = amount;
+      update();
+    }
+  }
+
+  // updatePeriod(Amount? amount, String? period) {
+  //   //_isPeriodRemoved.value = value;
+  //   if (amount == null) return;
+  //   if (period != null) {
+  //     amountOperations.updateAmount(amount.copy(period: period));
+  //   } else {
+  //     amountOperations.updateAmount(amount);
+  //   }
+
+  //   _tempAmount.value = amount;
+  //   update();
+  // }
+
+  // setTextButtonPress(bool value) {
+  //   _isTextButtonPressed.value = value;
+  //   update();
+  // }
+
+  setChoosenTimePeriod(String text) {
+    _choosenTimePeriod.value = text;
+    update();
+  }
 
   setCategoryText(Object? selectedText) {
     if (selectedText != null) {
@@ -78,18 +137,49 @@ class InputController extends GetxController {
   }
 
   ////
+  // oinsertDataByFrequency(Amount amount) async {
+  //   //List<Amount> amountList = [];
+  //   final timeDifference =
+  //       _lastPeriodDate.value!.difference(DateTime.now()).inMinutes;
+  //   // print('timeDifference: $timeDifference');
+  //   // print('_frequency.value!.inMinutes : ${_frequency.value!.inMinutes}');
+  //   final loopInt = timeDifference ~/ _frequency.value!.inMinutes;
+  //   var tempDate = DateTime.now();
+  //   //print('loopInt : $loopInt');
+  //   for (int i = 0; i <= loopInt; i++) {
+  //     await amountOperations.createAmount(amount.copy(dateTime: tempDate));
+  //     tempDate = tempDate.subtract(Duration(minutes: timeDifference));
+  //   }
+  // }
+
   insertDataByFrequency(Amount amount) async {
-    //List<Amount> amountList = [];
     final timeDifference =
         _lastPeriodDate.value!.difference(DateTime.now()).inMinutes;
-    // print('timeDifference: $timeDifference');
-    // print('_frequency.value!.inMinutes : ${_frequency.value!.inMinutes}');
-    final loopInt = timeDifference ~/ _frequency.value!.inMinutes;
-    var tempDate = DateTime.now();
-    //print('loopInt : $loopInt');
+    final loopInt = timeDifference ~/ Utils.byMinutes(_choosenTimePeriod.value);
+    var tempDate = amount.dateTime;
+
+    //box.write('period', _choosenTimePeriod.value );
+
     for (int i = 0; i <= loopInt; i++) {
       await amountOperations.createAmount(amount.copy(dateTime: tempDate));
-      tempDate = tempDate.subtract(Duration(minutes: timeDifference));
+      tempDate = tempDate.subtract(
+          Duration(minutes: Utils.byMinutes(_choosenTimePeriod.value)));
+    }
+  }
+
+  deleteDataByFrequency(Amount amount) async {
+    if (amount == null) return;
+
+    while (true) {
+      String dateString =
+          '${(amount.dateTime).subtract(Duration(minutes: Utils.byMinutes(amount.period!)))}';
+
+      String timeFormat =
+          '${dateString.substring(0, 10)}T${dateString.substring(11)}';
+
+      var id = await amountOperations.getIdByDate(timeFormat);
+      if(id == null) break;
+      amountOperations.deleteAmount(id);
     }
   }
 
