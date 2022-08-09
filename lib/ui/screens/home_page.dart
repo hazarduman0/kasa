@@ -73,12 +73,17 @@ class HomePage extends StatelessWidget {
 
                           amount.isLoading
                               ? const Center(child: CircularProgressIndicator())
-                              : Column(
+                              : getAmountWidgetList().isNotEmpty ? Column(
                                   //listviewBuilder
                                   mainAxisSize: MainAxisSize.min,
                                   children: getAmountWidgetList() +
                                       [SizedBox(height: Get.height * 0.1)],
-                                )
+                                ) : Container(
+                                  height: Get.height / 2,
+                                  width: Get.width,
+                                  alignment: Alignment.center,
+                                  child: const Text('Burada bir işlem \ngörünmüyor', style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold)),
+                                ),
                         ],
                       );
                     }),
