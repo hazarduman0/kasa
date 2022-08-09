@@ -1,3 +1,5 @@
+import 'package:kasa/data/models/period.dart';
+
 final String tableAmount = 'amounts';
 
 class AmountFields {
@@ -7,7 +9,8 @@ class AmountFields {
     description,
     amount,
     isFixed,
-    dateTime
+    dateTime,
+    period
   ];
 
   static const String id = '_id';
@@ -16,6 +19,7 @@ class AmountFields {
   static const String amount = 'amount';
   static const String isFixed = 'isFixed';
   static const String dateTime = 'dateTime';
+  static const String period = 'period';
 }
 
 class Amount {
@@ -25,6 +29,7 @@ class Amount {
   double amount;
   bool isFixed;
   DateTime dateTime;
+  String? period;
 
   Amount(
       {this.id,
@@ -32,7 +37,9 @@ class Amount {
       required this.description,
       required this.amount,
       required this.isFixed,
-      required this.dateTime});
+      required this.dateTime,
+      this.period
+      });
 
   Amount copy(
           {int? id,
@@ -40,7 +47,9 @@ class Amount {
           String? description,
           double? amount,
           bool? isFixed,
-          DateTime? dateTime}) =>
+          DateTime? dateTime,
+          String? period
+          }) =>
       Amount(
         id: id ?? this.id,
         category: category ?? this.category,
@@ -48,6 +57,7 @@ class Amount {
         amount: amount ?? this.amount,
         isFixed: isFixed ?? this.isFixed,
         dateTime: dateTime ?? this.dateTime,
+        period: period ?? this.period
       );
 
   static Amount fromJson(Map<String, Object?> json) => Amount(
@@ -57,6 +67,7 @@ class Amount {
         amount: json[AmountFields.amount] as double,
         isFixed: json[AmountFields.isFixed] == 1,
         dateTime: DateTime.parse(json[AmountFields.dateTime] as String),
+        period: json[AmountFields.period] as String?
       );
 
   Map<String, Object?> toJson() => {
@@ -66,5 +77,6 @@ class Amount {
     AmountFields.amount : amount,
     AmountFields.isFixed : isFixed ? 1 : 0,
     AmountFields.dateTime : dateTime.toIso8601String(),
+    AmountFields.period : period,
   };   
 }
