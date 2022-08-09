@@ -42,7 +42,8 @@ class DatabaseRepository {
       ${AmountFields.description} $nullableTextType,
       ${AmountFields.amount} $realType,
       ${AmountFields.isFixed} $boolType,
-      ${AmountFields.dateTime} $notNullableTextType
+      ${AmountFields.dateTime} $notNullableTextType,
+      ${AmountFields.period} $nullableTextType
     )
 ''');
 
@@ -54,14 +55,14 @@ class DatabaseRepository {
     )
 ''');
 
-    await db.execute('''
-    CREATE TABLE $tablePeriod (
-      ${PeriodFields.id} $idType,
-      ${PeriodFields.amountId} $integerType,
-      ${PeriodFields.duration} $notNullableTextType,
-      FOREIGN KEY (${PeriodFields.amountId}) REFERENCES $tableAmount (${AmountFields.id}) ON DELETE CASCADE
-    )
-  ''');
+  //   await db.execute('''
+  //   CREATE TABLE $tablePeriod (
+  //     ${PeriodFields.id} $idType,
+  //     ${PeriodFields.amountId} $integerType,
+  //     ${PeriodFields.duration} $notNullableTextType,
+  //     FOREIGN KEY (${PeriodFields.amountId}) REFERENCES $tableAmount (${AmountFields.id}) ON DELETE CASCADE
+  //   )
+  // ''');
 
     await db.insert(tableCategory,
         Category(id: 1, category: 'AİDAT', isIncome: false).toJson());
