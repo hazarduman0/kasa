@@ -19,5 +19,10 @@ class AppKeys {
   static String minuteText = 'Dakika';
   static String frequencyRecurrence = 'Tekrarlanma sıklığı';
   static String lastPeriodDate = 'Periyodun sonlanma tarihi';
+  static String appBarIncomeExpenseText = 'Gelir Giderler';
+  static String fixedIncomeCardText = 'Sabit Gelirler';
+  static String fixedExpenseCardText = 'Sabit Giderler';
+  static String expenseCardText = 'Giderler';
+  static String incomeCardText = 'Gelirler';
 
 }

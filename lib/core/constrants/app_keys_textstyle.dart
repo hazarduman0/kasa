@@ -63,6 +63,16 @@ class AppKeysTextStyle {
     fontWeight: FontWeight.bold,
     fontSize: Get.width * 0.05
   );
+  static TextStyle incomeExpenseAppBarTextStyle = TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+    fontSize: Get.width * 0.08
+  );
+  static TextStyle cardHeaderTextStyle = TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+    fontSize:  Get.width * 0.05,
+  );
   // static TextStyle isFixedHeadersTextStyle = TextStyle();
 
   
