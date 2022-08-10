@@ -36,7 +36,7 @@ class ActivityTimeLine extends StatelessWidget {
         amount.amount > 0
             ? inputController.isRemoveFunc(false)
             : inputController.isRemoveFunc(true);
-        inputController.setTempAmount(amount);    
+        inputController.setTempAmount(amount);
         Get.to(() => AmountDetailPage());
       },
       child: TimelineTile(
@@ -52,8 +52,10 @@ class ActivityTimeLine extends StatelessWidget {
             padding: const EdgeInsets.all(4.0),
             color:
                 amount.amount > 0 ? AppColors.limonana : AppColors.silkenRuby,
-            height: 10.0,
-            width: 10.0),
+            height: amount.isFixed ? 30.0 : 10.0,
+            width: amount.isFixed ? 30.0 : 10.0,
+            iconStyle: IconStyle(
+                iconData: Icons.push_pin_outlined, color: Colors.black, fontSize: amount.isFixed ? 25 : 0)),
         beforeLineStyle: LineStyle(
             color:
                 amount.amount > 0 ? AppColors.limonana : AppColors.silkenRuby,
