@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kasa/controllers/amount_controller.dart';
+import 'package:kasa/controllers/income_expense_controller.dart';
 import 'package:kasa/controllers/input_controller.dart';
 import 'package:kasa/core/constrants/app_colors.dart';
 import 'package:kasa/core/constrants/app_keys.dart';
 import 'package:kasa/core/constrants/app_keys_textstyle.dart';
+import 'package:kasa/ui/screens/income_expense.dart';
 import 'package:kasa/ui/widgets/home/activity_timeline.dart';
 import 'package:kasa/ui/widgets/home/bottom_sheet_widget.dart';
 import 'package:kasa/ui/widgets/home/month_comparison_card.dart';
@@ -16,6 +18,8 @@ class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
 
   final AmountController _amount = Get.find();
+
+  final IncomeExpenseController _incomeExpense = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -73,17 +77,23 @@ class HomePage extends StatelessWidget {
 
                           amount.isLoading
                               ? const Center(child: CircularProgressIndicator())
-                              : getAmountWidgetList().isNotEmpty ? Column(
-                                  //listviewBuilder
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: getAmountWidgetList() +
-                                      [SizedBox(height: Get.height * 0.1)],
-                                ) : Container(
-                                  height: Get.height / 2,
-                                  width: Get.width,
-                                  alignment: Alignment.center,
-                                  child: const Text('Burada bir işlem \ngörünmüyor', style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold)),
-                                ),
+                              : getAmountWidgetList().isNotEmpty
+                                  ? Column(
+                                      //listviewBuilder
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: getAmountWidgetList() +
+                                          [SizedBox(height: Get.height * 0.1)],
+                                    )
+                                  : Container(
+                                      height: Get.height / 2,
+                                      width: Get.width,
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                          'Burada bir işlem \ngörünmüyor',
+                                          style: TextStyle(
+                                              fontSize: 40.0,
+                                              fontWeight: FontWeight.bold)),
+                                    ),
                         ],
                       );
                     }),
@@ -100,14 +110,24 @@ class HomePage extends StatelessWidget {
             label: 'Son İşlemler',
             backgroundColor: AppColors.maximumBlueGreen),
         BottomNavigationBarItem(
-            icon: const Icon(Icons.incomplete_circle_outlined),
-            label: '${AppKeys.incomeText}/${AppKeys.expense}',
-            backgroundColor: AppColors.maximumBlueGreen),
+          icon: IconButton(
+              onPressed: () async {
+                await _incomeExpense.getFixedExpenseList();
+                await _incomeExpense.getFixedIncomeList();
+                await _incomeExpense.getRegularExpenseList();
+                await _incomeExpense.getRegularIncomeList();
+                Get.to(() => IncomeExpensePage());
+              },
+              icon: const Icon(Icons.my_library_books_outlined)),
+          label: '${AppKeys.incomeText}/${AppKeys.expense}',
+          backgroundColor: AppColors.maximumBlueGreen,
+        ),
         BottomNavigationBarItem(
           icon: GetBuilder<InputController>(builder: (sheet) {
             return IconButton(
               onPressed: () {
                 sheet.isRemoveFunc(false);
+
                 _getBottomSheet();
               },
               icon: Icon(Icons.add_circle_outlined,
