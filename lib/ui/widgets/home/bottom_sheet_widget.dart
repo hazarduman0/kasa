@@ -10,6 +10,7 @@ import 'package:kasa/core/constrants/app_keys_textstyle.dart';
 import 'package:kasa/data/models/amount.dart';
 import 'package:kasa/data/provider/amount_provider.dart';
 import 'package:kasa/ui/widgets/home/fixed_time_picker.dart';
+
 import 'package:kasa/ui/widgets/home/period_select_gridview.dart';
 
 class BottomSheetWidget extends StatefulWidget {
@@ -31,6 +32,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   AmountOperations amountOperations = AmountOperations();
 
   DateTime tempDateTime = DateTime.now();
+
+  //final box = GetStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -214,7 +217,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 : inputController.amountDouble,
             isFixed: true,
             dateTime: DateTime.now(),
-            period: inputController.choosenTimePeriod
+            period: inputController.choosenTimePeriod,
+            isFirst: true
             ));
       } else {
         await amountOperations.createAmount(Amount(
@@ -226,6 +230,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 : inputController.amountDouble,
             isFixed: false,
             dateTime: DateTime.now(),
+            isFirst: false
             ));
       }
 
