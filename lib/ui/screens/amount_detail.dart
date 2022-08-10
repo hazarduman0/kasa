@@ -354,7 +354,9 @@ class AmountDetailPage extends StatelessWidget {
           dateTime: inputController.tempAmount!.dateTime,
           period: inputController.tempAmount!.isFixed
               ? inputController.tempAmount!.period
-              : null));
+              : null,
+          isFirst: inputController.tempAmount!.isFirst 
+              ));
       amountController.getAmountList();
       Get.back();
     }
