@@ -23,7 +23,7 @@ class AmountController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    getAmountListc();
+    //getAmountListc();
     getAmountList();
     
     //print('deneme: ${amountOperations.deneme()}');
@@ -31,14 +31,14 @@ class AmountController extends GetxController {
 
   
 
-  getAmountListc() async {
+  // getAmountListc() async {
   
-    List<Amount> amountResponse = await amountOperations.getAmountList();
-    for(var amount in amountResponse){
-      print(amount.dateTime);
-    }
+  //   List<Amount> amountResponse = await amountOperations.getAmountList();
+  //   for(var amount in amountResponse){
+  //     print(amount.dateTime);
+  //   }
     
-  }
+  // }
 
   getAmountList() async {
     String now = '${DateTime.now()}';

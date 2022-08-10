@@ -5,6 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:kasa/core/utils.dart';
 import 'package:kasa/data/models/amount.dart';
 import 'package:kasa/data/provider/amount_provider.dart';
+import 'package:get_storage/get_storage.dart';
 
 class InputController extends GetxController {
   @override
@@ -160,10 +161,28 @@ class InputController extends GetxController {
 
     //box.write('period', _choosenTimePeriod.value );
 
-    for (int i = 0; i <= loopInt; i++) {
-      await amountOperations.createAmount(amount.copy(dateTime: tempDate));
-      tempDate = tempDate.add(
-          Duration(minutes: Utils.byMinutes(_choosenTimePeriod.value)));
+    // if (amount.amount < 0) {
+    //   // List<Amount> _fixedExpenseList = box.read('FixedExpense');
+    //   // _fixedExpenseList.add(amount);
+    //   // box.write('FixedExpense', _fixedExpenseList);
+    //   box.write('fixedExpense${amount.id}', amount);
+    // } else {
+    //   box.write('fixedIncome${amount.id}', amount);
+    //   // List<Amount> _fixedIncomeList = box.read('FixedIncome');
+    //   // _fixedIncomeList.add(amount);
+    //   // box.write('FixedIncome', _fixedIncomeList);
+    // }
+
+    await amountOperations.createAmount(amount);
+
+    tempDate = tempDate
+        .add(Duration(minutes: Utils.byMinutes(_choosenTimePeriod.value)));
+
+    for (int i = 0; i < loopInt; i++) {
+      await amountOperations
+          .createAmount(amount.copy(dateTime: tempDate, isFirst: false));
+      tempDate = tempDate
+          .add(Duration(minutes: Utils.byMinutes(_choosenTimePeriod.value)));
     }
   }
 
@@ -174,10 +193,9 @@ class InputController extends GetxController {
     Duration duration = Duration(minutes: Utils.byMinutes(amount.period!));
 
     while (true) {
-      String dateString =
-          '${(dateTime).add(duration)}';
+      String dateString = '${(dateTime).add(duration)}';
 
-      dateTime = dateTime.add(duration);   
+      dateTime = dateTime.add(duration);
 
       String timeFormat =
           '${dateString.substring(0, 10)}T${dateString.substring(11)}';
