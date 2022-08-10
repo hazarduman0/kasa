@@ -10,7 +10,8 @@ class AmountFields {
     amount,
     isFixed,
     dateTime,
-    period
+    period,
+    isFirst
   ];
 
   static const String id = '_id';
@@ -20,6 +21,7 @@ class AmountFields {
   static const String isFixed = 'isFixed';
   static const String dateTime = 'dateTime';
   static const String period = 'period';
+  static const String isFirst = 'isFirst';
 }
 
 class Amount {
@@ -30,6 +32,7 @@ class Amount {
   bool isFixed;
   DateTime dateTime;
   String? period;
+  bool isFirst;
 
   Amount(
       {this.id,
@@ -38,6 +41,7 @@ class Amount {
       required this.amount,
       required this.isFixed,
       required this.dateTime,
+      required this.isFirst,
       this.period
       });
 
@@ -48,7 +52,8 @@ class Amount {
           double? amount,
           bool? isFixed,
           DateTime? dateTime,
-          String? period
+          String? period,
+          bool? isFirst
           }) =>
       Amount(
         id: id ?? this.id,
@@ -57,7 +62,8 @@ class Amount {
         amount: amount ?? this.amount,
         isFixed: isFixed ?? this.isFixed,
         dateTime: dateTime ?? this.dateTime,
-        period: period ?? this.period
+        period: period ?? this.period,
+        isFirst: isFirst ?? this.isFirst
       );
 
   static Amount fromJson(Map<String, Object?> json) => Amount(
@@ -67,7 +73,8 @@ class Amount {
         amount: json[AmountFields.amount] as double,
         isFixed: json[AmountFields.isFixed] == 1,
         dateTime: DateTime.parse(json[AmountFields.dateTime] as String),
-        period: json[AmountFields.period] as String?
+        period: json[AmountFields.period] as String?,
+        isFirst: json[AmountFields.isFirst] == 1
       );
 
   Map<String, Object?> toJson() => {
@@ -78,5 +85,6 @@ class Amount {
     AmountFields.isFixed : isFixed ? 1 : 0,
     AmountFields.dateTime : dateTime.toIso8601String(),
     AmountFields.period : period,
+    AmountFields.isFirst : isFirst
   };   
 }

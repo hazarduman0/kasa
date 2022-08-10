@@ -43,7 +43,8 @@ class DatabaseRepository {
       ${AmountFields.amount} $realType,
       ${AmountFields.isFixed} $boolType,
       ${AmountFields.dateTime} $notNullableTextType,
-      ${AmountFields.period} $nullableTextType
+      ${AmountFields.period} $nullableTextType,
+      ${AmountFields.isFirst} $boolType
     )
 ''');
 
