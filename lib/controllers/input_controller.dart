@@ -1,11 +1,9 @@
 import 'dart:developer';
 
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:kasa/core/utils.dart';
 import 'package:kasa/data/models/amount.dart';
 import 'package:kasa/data/provider/amount_provider.dart';
-import 'package:get_storage/get_storage.dart';
 
 class InputController extends GetxController {
   @override
@@ -16,8 +14,6 @@ class InputController extends GetxController {
   }
 
   AmountOperations amountOperations = AmountOperations();
-
-  final box = GetStorage();
 
   //final RxBool _isFixedChoosen = false.obs;
   final RxBool _isRemove = false.obs;

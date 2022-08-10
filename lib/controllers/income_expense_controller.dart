@@ -1,11 +1,8 @@
 import 'package:get/get.dart';
 import 'package:kasa/data/models/amount.dart';
 import 'package:kasa/data/provider/amount_provider.dart';
-import 'package:get_storage/get_storage.dart';
-
 class IncomeExpenseController extends GetxController {
   AmountOperations amountOperations = AmountOperations();
-  final box = GetStorage();
 
   RxList<Amount> _fixedIncomeList = <Amount>[].obs;
   RxList<Amount> _fixedExpenseList = <Amount>[].obs;
@@ -27,7 +24,6 @@ class IncomeExpenseController extends GetxController {
 
   getFixedIncomeList() async {
     _fixedIncomeList.assignAll(await amountOperations.getFixedIncomeList());
-    print('_fixedIncomeList.value : ${_fixedIncomeList.value[0].amount}');
     update();
   }
 

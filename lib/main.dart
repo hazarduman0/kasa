@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 import 'package:kasa/bindings/await_bindings.dart';
 import 'package:kasa/ui/screens/home_page.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
-
-  await GetStorage.init();
   
   await AwaitBindings().dependencies();
 
