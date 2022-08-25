@@ -14,14 +14,6 @@ class IncomeExpenseController extends GetxController {
   List<Amount> get regularIncomeList => _regularIncomeList.value;
   List<Amount> get regularExpenseList => _regularExpenseList.value;
 
-  // getAllList() {
-  //   getFixedExpenseList();
-  //   getFixedIncomeList();
-  //   getRegularExpenseList();
-  //   getRegularIncomeList();
-    
-  // }
-
   getFixedIncomeList() async {
     _fixedIncomeList.assignAll(await amountOperations.getFixedIncomeList());
     update();

@@ -4,11 +4,6 @@ import 'package:kasa/data/models/category.dart';
 class CategoryOperations {
   DatabaseRepository dbRepository = DatabaseRepository.instance;
 
-  //create
-  //read
-  //update
-  //delete
-
   Future<Category> createCategory(Category category) async {
     final db = await dbRepository.database;
 

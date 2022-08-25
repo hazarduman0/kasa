@@ -20,12 +20,9 @@ class AmountController extends GetxController {
   final RxDouble _incomeAmount = 0.0.obs;
   final RxDouble _expenseAmount = 0.0.obs;
   final RxList<PieChartSectionData> _getSections = <PieChartSectionData>[].obs;
-  // final RxList<charts.Series<Task, String>> _seriesPieData =
-  //     <charts.Series<Task, String>>[].obs;
 
   List<PieChartSectionData> get getSections => _getSections;
   List<Amount> get amountList => _amountList;
-  //List<charts.Series<Task, String>> get seriesPieData => _seriesPieData;
   String get selectedRange => _selectedRange.value;
   double get netAmount => _netAmount.value;
   double get incomeAmount => _incomeAmount.value;
@@ -38,11 +35,7 @@ class AmountController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    //getAmountListc();
     getAmountList();
-    
-
-    //print('deneme: ${amountOperations.deneme()}');
   }
 
   @override
@@ -50,16 +43,6 @@ class AmountController extends GetxController {
     super.onReady();
     getPieData();
   }
-
-
-  // getAmountListc() async {
-
-  //   List<Amount> amountResponse = await amountOperations.getAmountList();
-  //   for(var amount in amountResponse){
-  //     print(amount.dateTime);
-  //   }
-
-  // }
 
   getAmountList() async {
     String now = '${DateTime.now()}';
@@ -105,15 +88,6 @@ class AmountController extends GetxController {
         .values
         .toList());
 
-    // _seriesPieData.assign(charts.Series(
-    //   data: pieData,
-    //   domainFn: (Task task, _) => task.profitText,
-    //   measureFn: (Task task, _) => task.profit.abs(),
-    //   colorFn: (Task task, _) => charts.ColorUtil.fromDartColor(task.color),
-    //   id: 'Gelir Gider',
-    //   //
-    // ));
-
     _pieLoad.value = false;
     update();
   }
@@ -135,15 +109,6 @@ class AmountController extends GetxController {
     _expenseAmount.value = expense;
     update();
   }
-
-  // getAmountList() async {
-  //   _isLoading.value = true;
-  //   update();
-  //   List<Amount> amountResponse = await amountOperations.getAmountList();
-  //   _amountList.value = amountResponse;
-  //   _isLoading.value = false;
-  //   update();
-  // }
 
   setSelectedRange(String range) {
     _selectedRange.value = range;

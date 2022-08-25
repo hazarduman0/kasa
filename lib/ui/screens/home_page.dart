@@ -1,8 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:kasa/controllers/amount_controller.dart';
 import 'package:kasa/controllers/income_expense_controller.dart';
 import 'package:kasa/controllers/input_controller.dart';
@@ -46,7 +43,6 @@ class HomePage extends StatelessWidget {
               constraints: BoxConstraints(minHeight: Get.height - 150),
               child: Card(
                 margin: EdgeInsets.zero,
-                //color: Colors.red,
                 color: AppColors.bakeryBox,
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
@@ -62,7 +58,6 @@ class HomePage extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // _rangeSelectStack(),
                           AnimatedCrossFade(
                             firstChild: _rangeAndProfit(),
                             secondChild: _rangeOptions(),
@@ -79,7 +74,6 @@ class HomePage extends StatelessWidget {
                               ? const Center(child: CircularProgressIndicator())
                               : getAmountWidgetList().isNotEmpty
                                   ? Column(
-                                      //listviewBuilder
                                       mainAxisSize: MainAxisSize.min,
                                       children: getAmountWidgetList() +
                                           [SizedBox(height: Get.height * 0.1)],
@@ -135,7 +129,6 @@ class HomePage extends StatelessWidget {
             );
           }),
           label: '',
-          //backgroundColor: AppColors.maximumBlueGreen,
         ),
       ]),
       floatingActionButton: GetBuilder<InputController>(builder: (sheet) {
@@ -145,8 +138,8 @@ class HomePage extends StatelessWidget {
             sheet.isRemoveFunc(true);
             _getBottomSheet();
           },
-          child: Icon(Icons.remove_outlined, size: 25.0),
           backgroundColor: AppColors.silkenRuby,
+          child: const Icon(Icons.remove_outlined, size: 25.0),
         );
       }),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,

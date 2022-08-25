@@ -29,9 +29,6 @@ class AmountDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print('amountDate: ${amount.dateTime}');
-    // print(DateTime.now());
-    // print('1 hours ago: ${( DateTime.now()).subtract( const Duration(days: 7))}');
     return GetBuilder<InputController>(builder: (input) {
       return Stack(
         children: [
@@ -39,7 +36,6 @@ class AmountDetailPage extends StatelessWidget {
             appBar: AppBar(
               leading: IconButton(
                   onPressed: () {
-                    //input.setTextButtonPress(false);
                     Get.back();
                   },
                   icon: const Icon(Icons.arrow_back_ios_new_outlined,
@@ -58,7 +54,7 @@ class AmountDetailPage extends StatelessWidget {
                         title: 'Silinecek',
                         onConfirm: () {
                           amountOperations.deleteAmount(input.tempAmount!.id);
-                          amountController.getAmountList(); //controllere yaptır
+                          amountController.getAmountList();
                           Get.to(() => HomePage());
                         },
                       );
@@ -78,7 +74,6 @@ class AmountDetailPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _categoryEdit(),
-                        //_categorySelectBox(),
                         SizedBox(height: Get.height * 0.05),
                         _descriptionForm(),
                         SizedBox(height: Get.height * 0.05),
@@ -137,9 +132,6 @@ class AmountDetailPage extends StatelessWidget {
 
   GetBuilder<InputController> _periodInteract() {
     return GetBuilder<InputController>(builder: (input) {
-      //periyot eklenme işlemlerini db tarafında hallet
-      //periyodu olanın dialogunda periyodu kaldır seçeneği olsun
-      //periyot değiştiğinde buttonun textinde değişiklik gerçekleşsin
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -159,61 +151,10 @@ class AmountDetailPage extends StatelessWidget {
                   confirmTextColor: AppColors.silkenRuby,
                   buttonColor: Colors.white);
             },
-            // onPressed: input.tempAmount!.isFixed
-            //     // || input.isTextButtonPressed
-            //     ? () {
-            //         //db den gelen bilgiye göre controllerdeki bilgiyi güncelle önce
-
-            //         input.setChoosenTimePeriod(input.tempAmount!.period!);
-            //         Get.defaultDialog(
-            //           title: 'Periyot Güncelle',
-            //           titlePadding: const EdgeInsets.only(top: 30),
-            //           middleText: '',
-            //           confirm: const PeriodGridView(),
-            //           buttonColor: Colors.white,
-            //           contentPadding: const EdgeInsets.only(bottom: 30),
-            //         );
-            //       }
-            // : () {
-            //     input.setChoosenTimePeriod('30 gün');
-            //     //input.setTextButtonPress(true);
-            //     Get.defaultDialog(
-            //       title: 'Periyot ekle',
-            //       titlePadding: const EdgeInsets.only(top: 30),
-            //       middleText: '',
-            //       confirm: const PeriodGridView(),
-            //       buttonColor: Colors.white,
-            //       contentPadding: const EdgeInsets.only(bottom: 30),
-            //     );
-            //   },
             child: const Text('Periyodu kaldır'),
-            // Text(input.tempAmount!.isFixed
-            //     // ||input.isTextButtonPressed
-            //     ? 'Periyot değiştir'
-            //     : 'Periyot ekle +')),
           ),
           Row(
             children: [
-              // input.tempAmount!.isFixed
-              //     ? IconButton(
-              //         onPressed: () {
-              //           Get.defaultDialog(
-              //               title: 'Periyot kaldırılacak',
-              //               middleText:
-              //                   'Periyodu kaldırmak istediğinizden emin misiniz?',
-              //               textCancel: 'iptal',
-              //               textConfirm: 'Kaldır',
-              //               onConfirm: () {
-              //                 input.deleteDataByFrequency(input.tempAmount!);
-              //                 input.updatePeriod(input.tempAmount!
-              //                     .copy(isFixed: false, period: null));
-              //                 Get.back();
-              //               },
-              //               confirmTextColor: AppColors.silkenRuby,
-              //               buttonColor: Colors.white);
-              //         },
-              //         icon: Icon(Icons.delete, color: AppColors.silkenRuby))
-              //     : const SizedBox.shrink(),
               IconButton(
                   onPressed: () {},
                   icon: const Icon(Icons.info_outlined, color: Colors.grey)),
@@ -227,18 +168,17 @@ class AmountDetailPage extends StatelessWidget {
   GetBuilder _timePeriodGrid(String text) {
     return GetBuilder<InputController>(builder: (input) {
       return Container(
-        //height: Get.height * 0.01,
         width: Get.width / 2,
+        decoration: BoxDecoration(
+            color: input.choosenTimePeriod == text
+                ? Colors.blue.shade100
+                : Colors.transparent),
         child: Center(
             child: TextButton(
                 onPressed: () {
                   input.setChoosenTimePeriod(text);
                 },
                 child: Text(text))),
-        decoration: BoxDecoration(
-            color: input.choosenTimePeriod == text
-                ? Colors.blue.shade100
-                : Colors.transparent),
       );
     });
   }
@@ -472,7 +412,6 @@ class AmountDetailPage extends StatelessWidget {
         fillColor: Colors.white,
         filled: true,
         enabledBorder: _formBorder(),
-        //border: _formBorder(),
         focusedBorder: _formBorder(),
         errorBorder: InputBorder.none);
   }

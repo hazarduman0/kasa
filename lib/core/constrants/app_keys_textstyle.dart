@@ -73,18 +73,4 @@ class AppKeysTextStyle {
     fontWeight: FontWeight.bold,
     fontSize:  Get.width * 0.05,
   );
-  // static TextStyle isFixedHeadersTextStyle = TextStyle();
-
-  
-  // static TextStyle selectedButtonTextStyle = TextStyle(
-  //   color: AppColors.bakeryBox,
-  //   fontWeight: FontWeight.bold,
-  //   fontSize: Get.width * 0.05
-  // );
-  // static TextStyle unselectedButtonTextStyle = TextStyle(
-  //   color: AppColors.bakeryBox,
-  //   fontWeight: FontWeight.bold,
-  //   fontSize: Get.width * 0.05
-  // );
-  
 }

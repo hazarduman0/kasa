@@ -9,12 +9,11 @@ import 'package:kasa/core/constrants/app_keys.dart';
 import 'package:kasa/core/constrants/app_keys_textstyle.dart';
 import 'package:kasa/data/models/amount.dart';
 import 'package:kasa/data/provider/amount_provider.dart';
-import 'package:kasa/ui/widgets/home/fixed_time_picker.dart';
 
 import 'package:kasa/ui/widgets/home/period_select_gridview.dart';
 
 class BottomSheetWidget extends StatefulWidget {
-  BottomSheetWidget({Key? key}) : super(key: key);
+  const BottomSheetWidget({Key? key}) : super(key: key);
 
   @override
   State<BottomSheetWidget> createState() => _BottomSheetWidgetState();
@@ -32,8 +31,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   AmountOperations amountOperations = AmountOperations();
 
   DateTime tempDateTime = DateTime.now();
-
-  //final box = GetStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +59,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                   SizedBox(height: Get.height * 0.03),
                   _amountFormField(),
                   SizedBox(height: Get.height * 0.03),
-                  //const FixedTimePicker(),
                   _fixedTimePicker(),
                   SizedBox(height: Get.height * 0.01),
                   _saveButton(),
@@ -76,7 +72,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   GetBuilder _fixedTimePicker() {
     return GetBuilder<InputController>(builder: (input) {
       return AnimatedContainer(
-        //height: input.isFixed ? Get.height * 0.15 : Get.height * 0.1,
         width: Get.width,
         constraints: BoxConstraints(minHeight: Get.height * 0.1),
         decoration: BoxDecoration(
@@ -94,13 +89,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                     const Divider(),
                     _selectPeriodText(),
                     const PeriodGridView(),
-                    //_choosePeriodScale(),
-                    // _setTimePeriod(),
                     const Divider(),
-                    // input.isValidTimePeriod
-                    //     ? const SizedBox.shrink()
-                    //     : const Text('Lütfen 0 dan büyük bir değer giriniz',
-                    //         style: TextStyle(color: Colors.red))
                     _lasPeriodDateText(),
                     _lastPeriodDate(),
                   ],
@@ -139,13 +128,11 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
       child: CupertinoDatePicker(
         mode: CupertinoDatePickerMode.date,
         minimumYear: DateTime.now().year,
-        //minimumDate: DateTime.now(),
         initialDateTime: DateTime.now(),
         onDateTimeChanged: (value) {
           print('dateTime: $value');
-          //inputController.setLastPeriodDate(value); //her seferinde çalıştığında akıcılığı bozuyor.
           tempDateTime =
-              value; //save kısmında gerekli kontrolleri yaptıktan sonra controllere aktar.
+              value; 
         },
       ),
     );
@@ -177,7 +164,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     return GetBuilder<InputController>(builder: (input) {
       return CheckboxListTile(
         title: const Text('Sabit'),
-        //subtitle: input.isFixed ? const Text('Tekrar Periyodu') : const SizedBox.shrink(),
         value: input.isFixed,
         onChanged: (value) {
           input.setIsFixed(value!);
@@ -202,9 +188,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     final _isValid = key.currentState!.validate();
 
     if (_isValid) {
-      // inputController.setLastPeriodDate(tempDateTime);
-      // inputController.setFrequency();
-      // inputController.insertDataByFrequency();
       key.currentState!.save();
       if (inputController.isFixed) {
         inputController.setLastPeriodDate(tempDateTime);
@@ -222,7 +205,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
             ));
       } else {
         await amountOperations.createAmount(Amount(
-            //controllere yaptır
             category: inputController.selectedCategoryText,
             description: inputController.descriptionText,
             amount: inputController.isRemove
@@ -273,8 +255,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   TextFormField _descriptionForm() {
     return TextFormField(
       cursorColor: AppColors.blackHowl,
-      // style: AppKeysTextStyle.buttonTextStyle
-      //     .copyWith(color: AppColors.blackHowl),
       validator: (value) {
         if (value!.length > 30) {
           return 'Lütfen 30 karakterden fazla metin girmeyiniz';
@@ -296,7 +276,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
         fillColor: Colors.white,
         filled: true,
         enabledBorder: _formBorder(),
-        //border: _formBorder(),
         focusedBorder: _formBorder(),
         errorBorder: InputBorder.none);
   }
@@ -314,7 +293,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
               fillColor: Colors.white,
               filled: true,
               enabledBorder: _formBorder(),
-              //border: _formBorder(),
               focusedBorder: _formBorder()),
           style: AppKeysTextStyle.categoryTextStyle,
           borderRadius: BorderRadius.circular(15.0),
@@ -328,7 +306,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
             inputController.setCategoryText(newValue);
           },
           onChanged: (value) {
-            //categoryController.selectCategory(value);
             inputController.selectCategory(value);
           },
         ));

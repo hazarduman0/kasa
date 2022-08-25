@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:kasa/controllers/income_expense_controller.dart';
 import 'package:kasa/core/constrants/app_colors.dart';
@@ -11,7 +9,7 @@ import 'package:kasa/ui/screens/fixed_incomes.dart';
 import 'package:kasa/ui/widgets/income/card_timeline.dart';
 
 class IncomeExpensePage extends StatelessWidget {
-  IncomeExpensePage({Key? key}) : super(key: key);
+  const IncomeExpensePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -19,9 +19,6 @@ class ActivityTimeLine extends StatelessWidget {
       : super(key: key);
 
   Amount amount;
-  // double amount;
-  // String name;
-  // String date;
   bool isLast;
   bool isFirst;
   final double _thickness = 1.0;
